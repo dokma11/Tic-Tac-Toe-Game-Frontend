@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 
+// Ovde samo moram da namestim kada koje dugme sme da se pojavi i sve slcino tome
+
 function Navbar() {
     return (<>
         <nav className='bg-indigo-700 border-b border-indigo-500'>
@@ -13,10 +15,10 @@ function Navbar() {
                         </NavLink>
                         <div className='md:ml-auto'>
                             <div className='flex space-x-2'>
-                                <NavLink to='/' >
+                                <NavLink to='/register' >
                                     Sign up
                                 </NavLink>
-                                <NavLink to='/' >
+                                <NavLink to='/login' >
                                     Log in
                                 </NavLink>
                                 <NavLink to='/' >
@@ -28,7 +30,7 @@ function Navbar() {
                                 <NavLink to='/' >
                                     Profile
                                 </NavLink>
-                                <NavLink to='/' >
+                                <NavLink to='/logout' >
                                     Logout
                                 </NavLink>
                             </div>
