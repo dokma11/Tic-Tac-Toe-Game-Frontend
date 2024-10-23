@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 function PlayPage() {
     const navigate = useNavigate();
@@ -38,13 +38,33 @@ function PlayPage() {
 
         if(res.status !== 200) return toast.error('Unsuccessful new game creation attempt: ' + res.statusText);
 
+        // ovde dobijam public id koji mogu da prikazem korisniku kako bi ga prekopirao i prosledio ostalima
+        const nesJson = await res.json();
+        console.log(nesJson);
+
         return navigate('/');
     }
 
 
-    const submitJoinGameForm = (e) => {
+    const submitJoinGameForm = async (e) => {
         e.preventDefault();
 
+        // TODO: ovde moram da posaljem public id te partije koju zelim da join
+
+        // mozda samo odraditi neku proveru da li je dobar taj id tj da li je unet
+
+        const token = localStorage.getItem("token");
+        const res = await fetch('http://localhost:3000/api/games/join/' + publicId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if(res.status !== 200) return toast.error('Unsuccessful join attempt: ' + res.statusText);
+
+        return navigate('/');
     }
 
     return (
@@ -104,7 +124,6 @@ function PlayPage() {
                     {showJoinGameForm ? (
                         <>
                             <div className='container m-auto max-w-2xl py-10 pb-9 '>
-                                <form onSubmit={submitJoinGameForm}>
                                     <h2 className='text-3xl text-center font-semibold mb-6'>Join an already existing game</h2>
                                     <div className="sm:col-span-3 justify-content-center">
                                         <div className='mb-4'>
@@ -124,10 +143,10 @@ function PlayPage() {
                                         </div>
                                     </div>
                                     <button type="button"
-                                            className="flex w-1/3 justify-center rounded-md bg-black ml-56 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                            className="flex w-1/3 justify-center rounded-md bg-black ml-56 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            onClick={submitJoinGameForm}>
                                         Join
                                     </button>
-                                </form>
                             </div>
                         </>
                     ) : (
