@@ -1,6 +1,6 @@
 function HomePage() {
     return (<>
-        <h1>Welcome to Tic Tac Toe Pro!</h1>
+        <h1>Welcome to Tic Tac Toe Pro! - moram srediti malo</h1>
     </>);
 }
 

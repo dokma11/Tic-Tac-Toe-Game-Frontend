@@ -2,9 +2,11 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 
+// mozda da u poljima sa loznikom treba da se stavi recimo ikonica oka kao za zatvaranje i otvaranje
 function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [repeatedPassword, setRepeatedPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
 
@@ -20,7 +22,10 @@ function SignUpPage() {
             lastName: lastName,
         }
 
-        console.log(credentials);
+        if (credentials.password !== repeatedPassword) {
+            toast.error('Passwords do not match! Please enter matching passwords.');
+            return;
+        }
 
         const res = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
@@ -104,7 +109,28 @@ function SignUpPage() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <button type='submit' className='bg-blue-700 rounded self-center text-2xl text-center font-semibold mb-6'>Sign up</button>
+                    <div className='mb-4'>
+                        <label className='block text-gray-700 font-bold mb-2'>
+                            Repeat your password
+                        </label>
+                        <input
+                            type='password'
+                            id='repeatedPassword'
+                            name='repeatedPassword'
+                            className='border rounded w-full py-2 px-3 mb-2'
+                            required
+                            value={repeatedPassword}
+                            onChange={(e) => setRepeatedPassword(e.target.value)}
+                        />
+                    </div>
+                    <button type="submit"
+                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        Sign up
+                    </button>
+                    <p className="mt-10 text-center text-sm text-gray-500">
+                        Already have an account?
+                        <a href="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">&nbsp;Log in</a>
+                    </p>
                 </form>
             </div>
         </>

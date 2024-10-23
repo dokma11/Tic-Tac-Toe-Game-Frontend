@@ -3,7 +3,6 @@ import MainLayout from "./layouts/MainLayout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import SignUpPage from "./pages/SignUpPage.tsx";
-import LogoutButton from "./components/LogOutButton.tsx";
 
 function App() {
     const router = createBrowserRouter(
@@ -12,7 +11,6 @@ function App() {
                 <Route path='/' element={<HomePage />} />
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/register' element={<SignUpPage />} />
-                <Route path='/logout' element={<LogoutButton />} />
             </Route>
         )
     );

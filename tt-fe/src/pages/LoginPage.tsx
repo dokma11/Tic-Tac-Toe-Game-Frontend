@@ -24,13 +24,16 @@ function LoginPage() {
             body: JSON.stringify(credentials),
         });
 
-        if(res.status === 200) {
-            toast.success('Logged in successfully!');
-            return navigate('/');
-        } else {
+        if(res.status !== 200) {
             toast.error('Unsuccessful log in attempt: ' + res.statusText);
         }
 
+        const token = await res.text();
+        localStorage.setItem('token', token);
+
+        toast.success('Logged in successfully!');
+        navigate('/');
+        return window.location.reload();
     };
     return (
         <>
@@ -66,7 +69,15 @@ function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <button type='submit' className='bg-blue-700 rounded self-center text-2xl text-center font-semibold mb-6'>Log In</button>
+                    <button type="submit"
+                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        Log in
+                    </button>
+                    <p className="mt-10 text-center text-sm text-gray-500">
+                        Don't have an account?
+                        <a href="/register"
+                           className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">&nbsp;Sign up</a>
+                    </p>
                 </form>
             </div>
         </>
