@@ -39,10 +39,9 @@ function PlayPage() {
         if(res.status !== 200) return toast.error('Unsuccessful new game creation attempt: ' + res.statusText);
 
         // ovde dobijam public id koji mogu da prikazem korisniku kako bi ga prekopirao i prosledio ostalima
-        const nesJson = await res.json();
-        console.log(nesJson);
-
-        return navigate('/');
+        const result = await res.json();
+        toast.success('Game created successfully!');
+        return navigate('/lobby/' + result.publicId);
     }
 
 
@@ -55,7 +54,7 @@ function PlayPage() {
 
         const token = localStorage.getItem("token");
         const res = await fetch('http://localhost:3000/api/games/join/' + publicId, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -63,7 +62,7 @@ function PlayPage() {
         });
 
         if(res.status !== 200) return toast.error('Unsuccessful join attempt: ' + res.statusText);
-
+        toast.success('Game joined successfully!');
         return navigate('/');
     }
 

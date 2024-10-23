@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage.tsx";
 import SignUpPage from "./pages/SignUpPage.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
+import LobbyPage from "./pages/LobbyPage.tsx";
 
 function App() {
     const router = createBrowserRouter(
@@ -14,6 +15,7 @@ function App() {
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/register' element={<SignUpPage />} />
                 <Route path='/play' element={<PlayPage />} />
+                <Route path='/lobby/:publicId' element={<LobbyPage />} />
                 <Route path='*' element={<NotFoundPage />} />
             </Route>
         )
