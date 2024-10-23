@@ -24,9 +24,7 @@ function LoginPage() {
             body: JSON.stringify(credentials),
         });
 
-        if(res.status !== 200) {
-            toast.error('Unsuccessful log in attempt: ' + res.statusText);
-        }
+        if(res.status !== 200) return toast.error('Unsuccessful log in attempt: ' + res.statusText);
 
         const token = await res.text();
         localStorage.setItem('token', token);

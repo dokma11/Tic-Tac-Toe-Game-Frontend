@@ -22,10 +22,7 @@ function SignUpPage() {
             lastName: lastName,
         }
 
-        if (credentials.password !== repeatedPassword) {
-            toast.error('Passwords do not match! Please enter matching passwords.');
-            return;
-        }
+        if (credentials.password !== repeatedPassword) return toast.error('Passwords do not match! Please enter matching passwords.');
 
         const res = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
@@ -35,15 +32,14 @@ function SignUpPage() {
             body: JSON.stringify(credentials),
         });
 
-        console.log(res);
+        if (res.status !== 200) return toast.error('Unsuccessful sign up attempt: ' + res.statusText);
 
-        if(res.status === 200) {
-            toast.success('Signed up successfully!');
-            return navigate('/');
-        } else {
-            toast.error('Unsuccessful sign up attempt: ' + res.statusText);
-        }
+        const token = await res.text();
+        localStorage.setItem('token', token);
 
+        toast.success('Signed up successfully!');
+        navigate('/');
+        return window.location.reload();
     };
     return (
         <>
