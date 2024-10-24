@@ -41,16 +41,19 @@ function PlayPage() {
         // ovde dobijam public id koji mogu da prikazem korisniku kako bi ga prekopirao i prosledio ostalima
         const result = await res.json();
         toast.success('Game created successfully!');
-        return navigate('/lobby/' + result.publicId);
-    }
 
+        if (typeToSend.type === 2) {
+            return navigate('/lobby/' + result.publicId);
+            //return window.location.reload();
+        }
+
+        // kako hendlovati deo kada je sp
+    }
 
     const submitJoinGameForm = async (e) => {
         e.preventDefault();
 
-        // TODO: ovde moram da posaljem public id te partije koju zelim da join
-
-        // mozda samo odraditi neku proveru da li je dobar taj id tj da li je unet
+        if (publicId === "" || publicId.length != 9) return toast.error('Invalid Public Id provided');
 
         const token = localStorage.getItem("token");
         const res = await fetch('http://localhost:3000/api/games/join/' + publicId, {
@@ -62,8 +65,9 @@ function PlayPage() {
         });
 
         if(res.status !== 200) return toast.error('Unsuccessful join attempt: ' + res.statusText);
+
         toast.success('Game joined successfully!');
-        return navigate('/');
+        return navigate('/board/' + publicId);
     }
 
     return (

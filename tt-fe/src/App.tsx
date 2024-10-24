@@ -6,6 +6,8 @@ import SignUpPage from "./pages/SignUpPage.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import LobbyPage from "./pages/LobbyPage.tsx";
+import BoardPage from "./pages/BoardPage.tsx";
+import { WebSocketProvider } from "./components/WebSocketProvider.tsx";
 
 function App() {
     const router = createBrowserRouter(
@@ -16,23 +18,15 @@ function App() {
                 <Route path='/register' element={<SignUpPage />} />
                 <Route path='/play' element={<PlayPage />} />
                 <Route path='/lobby/:publicId' element={<LobbyPage />} />
+                <Route path='/board/:publicId' element={<BoardPage />} />
                 <Route path='*' element={<NotFoundPage />} />
             </Route>
         )
     );
-    return <RouterProvider router={router} />;
-}
-
-// test samo za ws
-const ws = new WebSocket('ws://localhost:3000');
-
-ws.onopen = () => {
-    console.log('Connected to WebSocket server');
-    ws.send(JSON.stringify('Hello Server!'));
-};
-
-ws.onmessage = (event) => {
-    console.log('Message from server:', event.data);
-};
+    return (
+        <WebSocketProvider>
+            <RouterProvider router={router} />
+        </WebSocketProvider>
+    );}
 
 export default App;

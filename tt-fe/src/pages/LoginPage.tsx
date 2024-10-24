@@ -14,7 +14,7 @@ function LoginPage() {
         const credentials = {
             email: email,
             password: password,
-        }
+        };
 
         const res = await fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
@@ -24,7 +24,7 @@ function LoginPage() {
             body: JSON.stringify(credentials),
         });
 
-        if(res.status !== 200) return toast.error('Unsuccessful log in attempt: ' + res.statusText);
+        if (res.status !== 200) return toast.error('Unsuccessful log in attempt: ' + res.statusText);
 
         const token = await res.text();
         localStorage.setItem('token', token);
@@ -33,11 +33,12 @@ function LoginPage() {
         navigate('/');
         return window.location.reload();
     };
+
     return (
         <>
             <div className='container m-auto max-w-2xl py-24 '>
+                <h2 className='text-3xl text-center font-semibold mb-6'>Log in</h2>
                 <form onSubmit={submitForm}>
-                    <h2 className='text-3xl text-center font-semibold mb-6'>Log in</h2>
                     <div className='mb-4'>
                         <label className='block text-gray-700 font-bold mb-2'>
                             Email
@@ -71,12 +72,12 @@ function LoginPage() {
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Log in
                     </button>
-                    <p className="mt-10 text-center text-sm text-gray-500">
-                        Don't have an account?
-                        <a href="/register"
-                           className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">&nbsp;Sign up</a>
-                    </p>
                 </form>
+                <p className="mt-10 text-center text-sm text-gray-500">
+                    Don't have an account?
+                    <a href="/register"
+                       className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">&nbsp;Sign up</a>
+                </p>
             </div>
         </>
     );
