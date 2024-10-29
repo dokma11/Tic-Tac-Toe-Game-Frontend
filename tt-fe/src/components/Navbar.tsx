@@ -54,6 +54,9 @@ function Navbar() {
                                         <NavLink to='/profile' className={linkClass}>
                                             Profile
                                         </NavLink>
+                                        <NavLink to='/game-history' className={linkClass}>
+                                            Game history
+                                        </NavLink>
                                         <NavLink to='/logout' onClick={handleLogout}  className={linkClass}>
                                             Log out
                                         </NavLink>

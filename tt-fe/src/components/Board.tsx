@@ -140,9 +140,6 @@ function Board() {
     };
 
     const handleFieldInput = (data: string)=>  {
-
-        console.log('player 1: ' + player);
-
         if (data.includes('x')) {
             const messageSplit = data.split(';');
             const index = messageSplit[3];
@@ -161,8 +158,6 @@ function Board() {
 
             console.log(squares);
         }
-
-        console.log('player 2: ' + player);
 
         if (data.includes('y')) {
             const messageSplit = data.split(';');

@@ -14,6 +14,7 @@ import DefeatPage from "./pages/DefeatPage.tsx";
 import WinPage from "./pages/WinPage.tsx";
 import SinglePlayerBoardPage from "./pages/SinglePlayerBoardPage.tsx";
 import DrawPage from "./pages/DrawPage.tsx";
+import GameHistoryPage from "./pages/GameHistoryPage.tsx";
 
 function App() {
     const router = createBrowserRouter(
@@ -31,6 +32,7 @@ function App() {
                 <Route path='/defeat/:publicId' element={<DefeatPage />} />
                 <Route path='/win/:publicId' element={<WinPage />} />
                 <Route path='/draw/:publicId' element={<DrawPage />} />
+                <Route path='/game-history' element={<GameHistoryPage />} />
                 <Route path='*' element={<NotFoundPage />} />
             </Route>
         )
