@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -6,13 +6,17 @@ function ProfilePage() {
     const navigate = useNavigate();
     // ovo je za sada mock - vratiti se kasnije
     const [user, setUser] = useState({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@example.com',
-        scoreX: 10,
-        scoreO: 8,
-        totalGames: 25
+        firstName: '',
+        lastName: '',
+        email: '',
+        scoreX: 0,
+        scoreO: 0,
+        totalGames: 0
     });
+
+    useEffect(() => {
+        getProfile();
+    }, []);
 
     const getProfile = async () => {
         const token = localStorage.getItem("token");
@@ -35,7 +39,6 @@ function ProfilePage() {
         const user = await res.json();
         setUser(user);
     };
-    getProfile();
 
     return (
         <div className="container mx-auto max-w-lg py-12">

@@ -12,7 +12,7 @@ function Board() {
     const navigate = useNavigate();
     let player = '';
     const [lastMove, setLastMove] = useState('Y');
-    // const [isPlayersTurn, setPlayersTurn] = useState(false);
+    const [isPlayersTurn, setPlayersTurn] = useState(false);
 
     const getGameInfo = async () => {
         const token = localStorage.getItem("token");
@@ -31,7 +31,7 @@ function Board() {
 
         const game = await res.json();
 
-        let decoded = { id: -120 };
+        let decoded = { id: -120 }; // just to set a random number
 
         if (!token){
             console.log('Token unavailable');
@@ -44,17 +44,19 @@ function Board() {
             console.log('player je iks')
             player = 'X';
             console.log('player sa printom: ' + player);
-            return;
+            setPlayersTurn(true);
+            return console.log('potez: ' + isPlayersTurn);
         }
 
         console.log('player je oks');
         player = 'Y';
-        return;
+        return console.log('player sa printom: ' + player);
     };
 
     useEffect(() => {
         if (ws) {
-            const setupWebSocket = () => {
+            const setupWebSocket = async () => {
+                await getGameInfo();
                 ws.onmessage = async (event) => {
                     console.log('Message from server:', event.data);
 
@@ -138,6 +140,9 @@ function Board() {
     };
 
     const handleFieldInput = (data: string)=>  {
+
+        console.log('player 1: ' + player);
+
         if (data.includes('x')) {
             const messageSplit = data.split(';');
             const index = messageSplit[3];
@@ -146,11 +151,18 @@ function Board() {
                 const newSquares = [...prevSquares];
                 newSquares[index] = 'X';
                 setLastMove('X');
+                if (player === 'X') {
+                    setPlayersTurn(false);
+                } else {
+                    setPlayersTurn(true);
+                }
                 return newSquares;
             });
 
             console.log(squares);
         }
+
+        console.log('player 2: ' + player);
 
         if (data.includes('y')) {
             const messageSplit = data.split(';');
@@ -160,6 +172,11 @@ function Board() {
                 const newSquares = [...prevSquares];
                 newSquares[index] = 'O';
                 setLastMove('Y');
+                if (player !== 'X') {
+                    setPlayersTurn(false);
+                } else {
+                    setPlayersTurn(true);
+                }
                 return newSquares;
             });
 
@@ -168,11 +185,16 @@ function Board() {
     }
 
     return (
+        <>
+            <p className={`text-xl font-semibold mb-6 mr-12 ${isPlayersTurn ? 'text-green-500' : 'text-red-500'}`}>
+                {isPlayersTurn ? 'Your turn' : "Opponent's turn"}
+            </p>
             <div className="grid grid-cols-3 gap-10 w-1/3">
                 {squares.map((value, index) => (
                     <Field key={index} value={value} onClick={() => handleClick(index)}/>
                 ))}
             </div>
+        </>
     );
 }
 

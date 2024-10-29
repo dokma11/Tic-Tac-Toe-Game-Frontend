@@ -2,7 +2,6 @@ import Field from './Field';
 import { useEffect, useState } from 'react';
 import { useWebSocket } from "./WebSocketProvider.tsx";
 import { useNavigate, useParams } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 
 function SinglePlayerBoard() {
@@ -10,8 +9,8 @@ function SinglePlayerBoard() {
     const { publicId } = useParams();
     const [squares, setSquares] = useState(Array(9).fill(null));
     const navigate = useNavigate();
-    let player = '';
-    // const [isPlayersTurn, setPlayersTurn] = useState(false);
+    const [isPlayersTurn, setPlayersTurn] = useState(true);
+    const [isGameOver, setGameOver] = useState(false);
 
     const getGameInfo = async () => {
         const token = localStorage.getItem("token");
@@ -28,25 +27,6 @@ function SinglePlayerBoard() {
             return navigate('*');
         }
 
-        const game = await res.json();
-
-        let decoded = { id: -120 };
-
-        if (!token){
-            console.log('Token unavailable');
-            return toast.error('Application error');
-        }
-
-        decoded = jwtDecode(token);
-
-        if (decoded.id === game.xPlayerId) {
-            console.log('player je iks')
-            player = 'X';
-            console.log('player sa printom: ' + player);
-        }
-
-        console.log('player je oks');
-        player = 'Y';
         return;
     };
 
@@ -59,8 +39,10 @@ function SinglePlayerBoard() {
                     if (event.data.includes('finish') && event.data.includes(publicId)) {
                         console.log('The game is finished');
 
-                        handleFieldInput(event.data.toString());
+                        setGameOver(true);
+                        setPlayersTurn(false);
 
+                        handleFieldInput(event.data.toString());
                         setTimeout(() => {
                             const messageSplit = event.data.split(';');
 
@@ -111,6 +93,10 @@ function SinglePlayerBoard() {
     const handleClick = async (index: number) => {
         if (squares[index]) return;
 
+        if (isGameOver) return toast.info('The game is over!');
+
+        if (!isPlayersTurn) return toast.info('Please wait for your turn!');
+
         await getGameInfo();
 
         const token = localStorage.getItem('token');
@@ -123,7 +109,6 @@ function SinglePlayerBoard() {
         return;
     };
 
-    // samo umesto toast notifikacija treba staviti da bude recimo neka labela koja se manja
     const handleFieldInput = (data: string)=>  {
         const messageSplit = data.split(';');
         const index = messageSplit[3];
@@ -134,8 +119,11 @@ function SinglePlayerBoard() {
             newSquares[index] = 'X';
             return newSquares;
         });
+        setPlayersTurn(false);
 
-        toast.info('cekaj komp');
+        // this is here so the computer won't make a move when the game is over
+        if (messageSplit.length === 7 && data.includes('x') && messageSplit[6] === 'false') return;
+
         // wait for computer's move
         setTimeout(() => {
             setSquares(prevSquares => {
@@ -143,16 +131,22 @@ function SinglePlayerBoard() {
                 newSquares[computerIndex] = 'O';
                 return newSquares;
             });
-            toast.info('tvoj potez');
+            setPlayersTurn(true);
         }, 2000);
+        return;
     }
 
     return (
+        <>
+            <p className={`text-xl font-semibold mb-6 mr-12 ${isPlayersTurn ? 'text-green-500' : 'text-red-500'}`}>
+                {isPlayersTurn ? 'Your turn' : "Computer's turn"}
+            </p>
         <div className="grid grid-cols-3 gap-10 w-1/3">
-            {squares.map((value, index) => (
-                <Field key={index} value={value} onClick={() => handleClick(index)}/>
-            ))}
+                {squares.map((value, index) => (
+                    <Field key={index} value={value} onClick={() => handleClick(index)}/>
+                ))}
         </div>
+        </>
     );
 }
 
