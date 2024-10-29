@@ -16,6 +16,8 @@ function Board() {
 
     const getGameInfo = async () => {
         const token = localStorage.getItem("token");
+        if (!token) return toast.error('Authorization Error!');
+
         const res = await fetch('http://localhost:3000/api/games/public-id/' + publicId, {
             method: 'GET',
             headers: {
@@ -31,94 +33,81 @@ function Board() {
 
         const game = await res.json();
 
-        let decoded = { id: -120 }; // just to set a random number
-
-        if (!token){
-            console.log('Token unavailable');
-            return toast.error('Application error');
-        }
-
-        decoded = jwtDecode(token);
-
+        const decoded = { id: jwtDecode(token) };
         if (decoded.id === game.xPlayerId) {
-            console.log('player je iks')
             player = 'X';
-            console.log('player sa printom: ' + player);
-            setPlayersTurn(true);
-            return console.log('potez: ' + isPlayersTurn);
+            return setPlayersTurn(true); // X player has the first move
         }
 
-        console.log('player je oks');
-        player = 'Y';
-        return console.log('player sa printom: ' + player);
+        return player = 'Y';
     };
 
     useEffect(() => {
-        if (ws) {
-            const setupWebSocket = async () => {
-                await getGameInfo();
-                ws.onmessage = async (event) => {
-                    console.log('Message from server:', event.data);
+        if (!ws) {
+            toast.error('Web socket error!');
+            return;
+        }
 
-                    if (event.data.includes('finish') && event.data.includes(publicId)) {
-                        console.log('The game is finished');
+        const setupWebSocket = async () => {
+            await getGameInfo();
+            ws.onmessage = async (event) => {
+                console.log('Message from server:', event.data);
 
-                        await getGameInfo();
+                // handle basic move
+                if (event.data.includes('move') && event.data.includes(publicId)) handleFieldInput(event.data.toString());
 
-                        console.log('player: ' + player);
+                // handle game finish
+                if (event.data.includes('finish') && event.data.includes(publicId)) {
+                    console.log('The game is finished');
 
-                        if (event.data.includes('true')) {
-                            console.log('The game is a draw.');
-                            toast.success('Draw!');
-                            return navigate('/draw/' + publicId);
-                        }
+                    await getGameInfo();
 
-                        if (event.data.includes('x')) {
-                            if (player === 'X') {
-                                console.log('X player won.');
-                                toast.success('Congratulations! You have won the match!');
-                                navigate('/win/' + publicId);
-                            } else {
-                                console.log('X player won.');
-                                toast.error('Defeat.');
-                                navigate('/defeat/' + publicId);
-                            }
-                        }
-
-                        if (event.data.includes('y')) {
-                            if (player === 'Y') {
-                                console.log('O player won.');
-                                toast.success('Congratulations! You have won the match!');
-                                navigate('/win/' + publicId);
-                            } else {
-                                console.log('O player won.');
-                                toast.error('Defeat.');
-                                navigate('/defeat/' + publicId);
-                            }
-                        }
-
-                        handleFieldInput(event.data.toString());
+                    if (event.data.includes('true')) {
+                        console.log('The game is a draw.');
+                        toast.success('Draw!');
+                        return navigate('/draw/' + publicId);
                     }
 
-                    if (event.data.includes('move') && event.data.includes(publicId)) {
-                        console.log('A move has been made');
-                        handleFieldInput(event.data.toString());
+                    if (event.data.includes('x')) {
+                        if (player === 'X') {
+                            console.log('X player won.');
+                            toast.success('Congratulations! You have won the match!');
+                            navigate('/win/' + publicId);
+                        } else {
+                            console.log('X player won.');
+                            toast.error('Defeat.');
+                            navigate('/defeat/' + publicId);
+                        }
                     }
-                };
 
-                ws.onopen = () => {
-                    ws.send(JSON.stringify('Hello Server from the lobby!'));
+                    if (event.data.includes('y')) {
+                        if (player === 'Y') {
+                            console.log('O player won.');
+                            toast.success('Congratulations! You have won the match!');
+                            navigate('/win/' + publicId);
+                        } else {
+                            console.log('O player won.');
+                            toast.error('Defeat.');
+                            navigate('/defeat/' + publicId);
+                        }
+                    }
+
+                    handleFieldInput(event.data.toString());
                 }
             };
 
-            if (ws.readyState === WebSocket.OPEN) {
-                setupWebSocket();
-            } else {
-                ws.onopen = () => {
-                    console.log('WebSocket connection is open now.');
-                    setupWebSocket();
-                };
+            ws.onopen = () => {
+                ws.send(JSON.stringify('Hello Server from the lobby!'));
             }
+        };
+
+        if (ws.readyState === WebSocket.OPEN) {
+            setupWebSocket();
+        } else {
+            ws.onopen = () => {
+                console.log('WebSocket connection is open now.');
+                setupWebSocket();
+            };
         }
     }, [ws, publicId]);
 
@@ -155,8 +144,6 @@ function Board() {
                 }
                 return newSquares;
             });
-
-            console.log(squares);
         }
 
         if (data.includes('y')) {
@@ -174,8 +161,6 @@ function Board() {
                 }
                 return newSquares;
             });
-
-            console.log(squares);
         }
     }
 

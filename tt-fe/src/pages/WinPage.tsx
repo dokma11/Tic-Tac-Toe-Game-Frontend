@@ -17,13 +17,13 @@ function WinPage() {
             <p className="text-lg mb-10">Congratulations! Hard work pays off right?</p>
             <div >
                 <button
-                    onClick={handleReturnHome}
+                    onClick={ handleReturnHome }
                     className="bg-green-600 text-white mr-3 px-6 py-3 rounded-md hover:bg-green-700 transition"
                 >
                     Return Home
                 </button>
                 <button
-                    onClick={handlePlayAgain}
+                    onClick={ handlePlayAgain }
                     className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition"
                 >
                     Play another game

@@ -16,17 +16,13 @@ function PlayPage() {
     const submitCreateForm = async (e) => {
         e.preventDefault();
 
-        let typeToSend = {
-            type: -1
-        }
-
-        if (gameType === 'Single player') {
-            typeToSend.type = 1;
-        } else{
-            typeToSend.type = 2;
-        }
+        const typeToSend = {
+            type: gameType === 'Single player' ? 1 : 2
+        };
 
         const token = localStorage.getItem("token");
+        if (!token) return toast.error('Authentication Error!');
+
         const res = await fetch('http://localhost:3000/api/games', {
             method: 'POST',
             headers: {
@@ -36,22 +32,17 @@ function PlayPage() {
             body: JSON.stringify(typeToSend),
         });
 
-        if(res.status !== 200) return toast.error('Unsuccessful new game creation attempt: ' + res.statusText);
+        if (res.status !== 200) return toast.error('Unsuccessful new game creation attempt: ' + res.statusText);
 
         // ovde dobijam public id koji mogu da prikazem korisniku kako bi ga prekopirao i prosledio ostalima
         const result = await res.json();
         toast.success('Game created successfully!');
 
         // multiplayer
-        if (typeToSend.type === 2) {
-            return navigate('/lobby/' + result.publicId);
-        }
+        if (typeToSend.type === 2) return navigate('/lobby/' + result.publicId);
 
         // single player
-        if (typeToSend.type === 1) {
-            // ovde nema potrebe da pravim lobi ako igra sp, mozda samo da kada posalje neki potez, ja sam u servisu napravim potez i vratim oba nazad?
-            return navigate('/sp-board/' + result.publicId);
-        }
+        if (typeToSend.type === 1) return navigate('/sp-board/' + result.publicId);
     }
 
     const submitJoinGameForm = async (e) => {
@@ -80,25 +71,26 @@ function PlayPage() {
                 <form>
                     <h2 className='text-3xl text-center font-semibold mb-6'>Choose how you want to play</h2>
                     <button type="button"
-                            className={showCreateGameForm ? "flex w-1/2 justify-center rounded-md bg-gray-400 ml-40 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" : "flex w-1/2 justify-center rounded-md bg-indigo-600 ml-40 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"}
+                            className={ showCreateGameForm ? "flex w-1/2 justify-center rounded-md bg-gray-400 ml-40 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" :
+                                "flex w-1/2 justify-center rounded-md bg-indigo-600 ml-40 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" }
                             onClick={ showCreateGameForm ?
                                 () => setShowCreateGameForm(false) :
                                 () => setShowCreateGameForm(true)}>
                         { showCreateGameForm ? 'Back' : 'Create a new game'}
                     </button>
 
-                    {showCreateGameForm ? (
+                    { showCreateGameForm ? (
                         <>
                             <div className='container m-auto max-w-2xl py-10 pb-9 '>
                                 <h2 className='text-3xl text-center font-semibold mb-6'>Create a new game</h2>
                                     <div className="sm:col-span-3 justify-content-center">
                                         <label htmlFor="gameType"
-                                               className="flex justify-center text-sm font-bold pr-40 leading-6 text-gray-900">Choose your game
-                                            type</label>
+                                               className="flex justify-center text-sm font-bold pr-40 leading-6 text-gray-900">Choose your game type
+                                        </label>
                                         <div className="flex w-full justify-center mt-2 mb-6">
                                             <select id="gameType"
                                                     name="gameType"
-                                                    value={gameType}
+                                                    value={ gameType }
                                                     onChange={(e) => setGameType(e.target.value)}
                                                     autoComplete="gameType-name"
                                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
@@ -109,7 +101,7 @@ function PlayPage() {
                                     </div>
                                     <button type="button"
                                             className="flex w-1/3 justify-center rounded-md bg-black ml-56 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                            onClick={submitCreateForm}>
+                                            onClick={ submitCreateForm }>
                                         Create
                                     </button>
                             </div>
@@ -120,7 +112,7 @@ function PlayPage() {
                     )}
 
                     <button type="button"
-                            className={showJoinGameForm ? "flex w-1/2 justify-center rounded-md bg-gray-400 ml-40 mt-6 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" :
+                            className={ showJoinGameForm ? "flex w-1/2 justify-center rounded-md bg-gray-400 ml-40 mt-6 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" :
                                 "flex w-1/2 justify-center rounded-md bg-indigo-600 ml-40 mt-6 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"}
                             onClick={ showJoinGameForm ?
                                 () => setShowJoinGameForm(false) :
@@ -128,7 +120,7 @@ function PlayPage() {
                         { showJoinGameForm ? 'Back' : 'Join an already existing game'}
                     </button>
 
-                    {showJoinGameForm ? (
+                    { showJoinGameForm ? (
                         <>
                             <div className='container m-auto max-w-2xl py-10 pb-9 '>
                                     <h2 className='text-3xl text-center font-semibold mb-6'>Join an already existing game</h2>
@@ -144,14 +136,14 @@ function PlayPage() {
                                                 className='border rounded w-1/2 py-2 px-3 mb-2 ml-40'
                                                 placeholder='eg. 123456789'
                                                 required
-                                                value={publicId}
+                                                value={ publicId }
                                                 onChange={(e) => setPublicId(e.target.value)}
                                             />
                                         </div>
                                     </div>
                                     <button type="button"
                                             className="flex w-1/3 justify-center rounded-md bg-black ml-56 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                            onClick={submitJoinGameForm}>
+                                            onClick={ submitJoinGameForm }>
                                         Join
                                     </button>
                             </div>
@@ -163,7 +155,7 @@ function PlayPage() {
 
                     <button type="submit"
                             className="flex w-1/2 justify-center rounded-md bg-indigo-600 px-3 py-1 ml-40 mt-6 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            onClick={handleGoBackOption}>
+                            onClick={ handleGoBackOption }>
                         Back to home page
                     </button>
                 </form>

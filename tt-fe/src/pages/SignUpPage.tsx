@@ -2,7 +2,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 
-// mozda da u poljima sa loznikom treba da se stavi recimo ikonica oka kao za zatvaranje i otvaranje
 function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -44,7 +43,7 @@ function SignUpPage() {
     return (
         <>
             <div className='container m-auto max-w-2xl py-24 '>
-                <form onSubmit={submitForm}>
+                <form onSubmit={ submitForm }>
                     <h2 className='text-3xl text-center font-semibold mb-6'>Sign up</h2>
                     <div className='mb-4'>
                         <label className='block text-gray-700 font-bold mb-2'>
@@ -57,7 +56,7 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             placeholder='eg. John'
                             required
-                            value={firstName}
+                            value={ firstName }
                             onChange={(e) => setFirstName(e.target.value)}
                         />
                     </div>
@@ -72,7 +71,7 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             placeholder='eg. Doe'
                             required
-                            value={lastName}
+                            value={ lastName }
                             onChange={(e) => setLastName(e.target.value)}
                         />
                     </div>
@@ -87,7 +86,7 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             placeholder='eg. example-mail@gmail.com'
                             required
-                            value={email}
+                            value={ email }
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
@@ -101,7 +100,7 @@ function SignUpPage() {
                             name='password'
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
-                            value={password}
+                            value={ password }
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
@@ -115,7 +114,7 @@ function SignUpPage() {
                             name='repeatedPassword'
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
-                            value={repeatedPassword}
+                            value={ repeatedPassword }
                             onChange={(e) => setRepeatedPassword(e.target.value)}
                         />
                     </div>

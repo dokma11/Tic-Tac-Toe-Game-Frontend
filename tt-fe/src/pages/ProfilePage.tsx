@@ -1,10 +1,9 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
     const navigate = useNavigate();
-    // ovo je za sada mock - vratiti se kasnije
     const [user, setUser] = useState({
         firstName: '',
         lastName: '',
@@ -22,7 +21,7 @@ function ProfilePage() {
     const getProfile = async () => {
         const token = localStorage.getItem("token");
 
-        if (!token) return toast.error('There is no token');
+        if (!token) return toast.error('Authentication error');
 
         const res = await fetch('http://localhost:3000/api/users/profile', {
             method: 'GET',
@@ -37,8 +36,7 @@ function ProfilePage() {
             return navigate('*');
         }
 
-        const user = await res.json();
-        setUser(user);
+        setUser(await res.json());
     };
 
     return (
@@ -78,7 +76,7 @@ function ProfilePage() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700 font-semibold">Overall Win Rate:</label>
-                    <p>{((user.wins) / user.totalPlayed * 100).toFixed(2)}%</p>
+                    <p>{ ((user.wins) / user.totalPlayed * 100).toFixed(2) }%</p>
                 </div>
             </div>
         </div>

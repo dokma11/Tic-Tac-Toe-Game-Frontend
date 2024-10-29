@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
     const navigate = useNavigate();
 
     const submitForm = async (e) => {
@@ -38,7 +37,7 @@ function LoginPage() {
         <>
             <div className='container m-auto max-w-2xl py-24 '>
                 <h2 className='text-3xl text-center font-semibold mb-6'>Log in</h2>
-                <form onSubmit={submitForm}>
+                <form onSubmit={ submitForm }>
                     <div className='mb-4'>
                         <label className='block text-gray-700 font-bold mb-2'>
                             Email
@@ -50,7 +49,7 @@ function LoginPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             placeholder='eg. example-mail@gmail.com'
                             required
-                            value={email}
+                            value={ email }
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
@@ -64,7 +63,7 @@ function LoginPage() {
                             name='password'
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
-                            value={password}
+                            value={ password }
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>

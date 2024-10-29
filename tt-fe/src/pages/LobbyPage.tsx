@@ -38,6 +38,8 @@ function LobbyPage() {
 
     const abandonGame = async () => {
         const token = localStorage.getItem("token");
+        if (!token) return toast.error('Authentication error');
+
         const res = await fetch('http://localhost:3000/api/games/cancel/' + publicId, {
             method: 'PUT',
             headers: {
@@ -53,30 +55,33 @@ function LobbyPage() {
     }
 
     useEffect(() => {
-        if (ws) {
-            const setupWebSocket = () => {
-                ws.onmessage = (event) => {
-                    console.log('Message from server:', event.data);
+        if (!ws) {
+            toast.error('Web socket error!');
+            return;
+        }
 
-                    if (event.data.includes('join') && event.data.includes(publicId)) {
-                        console.log('Another player has joined.');
-                        navigate('/board/' + publicId);
-                    }
-                };
+        const setupWebSocket = () => {
+            ws.onmessage = (event) => {
+                console.log('Message from server:', event.data);
 
-                ws.onopen = () => {
-                    ws.send(JSON.stringify('Hello Server from the lobby!'));
+                if (event.data.includes('join') && event.data.includes(publicId)) {
+                    console.log('Another player has joined.');
+                    navigate('/board/' + publicId);
                 }
             };
 
-            if (ws.readyState === WebSocket.OPEN) {
-                setupWebSocket();
-            } else {
-                ws.onopen = () => {
-                    console.log('WebSocket connection is open now.');
-                    setupWebSocket();
-                };
+            ws.onopen = () => {
+                ws.send(JSON.stringify('Hello Server from the lobby!'));
             }
+        };
+
+        if (ws.readyState === WebSocket.OPEN) {
+            setupWebSocket();
+        } else {
+            ws.onopen = () => {
+                console.log('WebSocket connection is open now.');
+                setupWebSocket();
+            };
         }
     }, [ws, publicId, navigate]);
 
@@ -88,14 +93,14 @@ function LobbyPage() {
                 <p className='text-xl mb-5'>Game public id: </p>
                 <p className='text-xl mb-5 rounded w-1/3 h-fit bg-gray-200'>{publicId}</p>
                 <button
-                    onClick={copyToClipboard}
+                    onClick={ copyToClipboard }
                     className='text-white bg-indigo-600 hover:bg-green-800 rounded-md px-3 py-2 -mt-6'
                 >
                     Copy
                 </button>
             </div>
             <button
-                onClick={abandonGame}
+                onClick={ abandonGame }
                 type='button'
                 className='text-white bg-red-500 hover:bg-indigo-900 rounded-md px-3 py-2 mt-6'
             >

@@ -32,14 +32,10 @@ function GameHistoryPage() {
         if(res.status !== 200) return toast.error('Unsuccessful history retrieval: ' + res.statusText);
 
         game = await res.json();
-
-        console.log(game);
-
         game.moves.forEach((move) => {
            const index = convertArrayToIndex(move.xCoordinate, move.yCoordinate);
             setSquares(prevSquares => {
                 const newSquares = [...prevSquares];
-
                 if (move.userId === game!.xPlayerId) {
                     newSquares[index] = 'X';
                 } else {
@@ -50,7 +46,6 @@ function GameHistoryPage() {
         });
 
         const token = localStorage.getItem("token");
-
         if (!token) return toast.error('There is no token');
 
         const userResult = await fetch('http://localhost:3000/api/users/id/' + game!.winnerId, {
@@ -61,12 +56,9 @@ function GameHistoryPage() {
             }
         });
 
-        if (userResult.status !== 200) {
-            toast.error('Unsuccessful winner retrieval: ' + userResult.statusText);
-        }
+        if (userResult.status !== 200) return toast.error('Unsuccessful winner retrieval: ' + userResult.statusText);
 
-        const user = await userResult.json();
-        setWinner(user);
+        setWinner(await userResult.json());
 
         toast.success('Game history successfully retrieved!');
         return setShouldShowMoves(true);
@@ -77,7 +69,7 @@ function GameHistoryPage() {
     }
 
     const handleClick = (index) => {
-
+        // nista
     }
 
     const convertArrayToIndex = (x: number, y: number) => {
@@ -101,14 +93,14 @@ function GameHistoryPage() {
                 </div>
                 <div className='justify-items-center mt-12'>
                     <div className="grid grid-cols-3 gap-10 w-1/2">
-                        {squares.map((value, index) => (
+                        { squares.map((value, index) => (
                             <Field key={index} value={value} onClick={() => handleClick(index)}/>
                         ))}
                     </div>
                 </div>
                 <button type="button"
                         className="flex w-1/3 justify-center rounded-md bg-black mt-10 ml-56 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        onClick={goBack}>
+                        onClick={ goBack }>
                     Go back
                 </button>
             </div>

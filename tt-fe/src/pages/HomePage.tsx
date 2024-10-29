@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 
 function HomePage() {
@@ -49,7 +49,7 @@ function HomePage() {
                 { isLoggedIn ?
                     (<div className="flex justify-center">
                         <button
-                            onClick={startGame}
+                            onClick={ startGame }
                             className="px-8 py-3 bg-indigo-600 text-white rounded-md text-lg font-semibold shadow-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition"
                         >
                             Start New Game
@@ -58,32 +58,32 @@ function HomePage() {
                     (<></>)
                 }
             </div>
-            {isLoggedIn ? (
+            { isLoggedIn ? (
                 <>
                     <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-4xl">
                         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
-                             onClick={startGame}>
+                             onClick={ startGame }>
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Play With Friends</h2>
                             <p className="text-gray-600">
                                 Invite your friends to a quick match of Tic Tac Toe and see who is the best!
                             </p>
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
-                             onClick={startGame}>
+                             onClick={ startGame }>
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Single Player Mode</h2>
                             <p className="text-gray-600">
                                 Practice your Tic Tac Toe skills by playing against a highly-skilled computer.
                             </p>
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
-                             onClick={checkProfile}>
+                             onClick={ checkProfile }>
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Profile</h2>
                             <p className="text-gray-600">
                                 Check out your profile where you can see the basic information and your score!
                             </p>
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
-                             onClick={checkRules}>
+                             onClick={ checkRules }>
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Game Rules</h2>
                             <p className="text-gray-600">
                                 New to Tic Tac Toe? Learn the rules quickly and start winning!
@@ -95,21 +95,21 @@ function HomePage() {
                 <>
                     <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-4xl">
                         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
-                             onClick={logIn}>
+                             onClick={ logIn }>
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Log In</h2>
                             <p className="text-gray-600">
                                 Log in to your account so you could start playing against your friends or computer!
                             </p>
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
-                             onClick={signUp}>
+                             onClick={ signUp }>
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Sign up</h2>
                             <p className="text-gray-600">
                                 Don't have an account already? Create a new one and start showing off your skills!
                             </p>
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
-                             onClick={checkRules}>
+                             onClick={ checkRules }>
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Game Rules</h2>
                             <p className="text-gray-600">
                                 New to Tic Tac Toe? Learn the rules quickly and start winning!

@@ -17,13 +17,13 @@ function DrawPage() {
             <p className="text-lg mb-10">Looks like you've came across a worthy opponent! Next time show no mercy.</p>
             <div >
                 <button
-                    onClick={handleReturnHome}
+                    onClick={ handleReturnHome }
                     className="bg-yellow-600 text-white mr-3 px-6 py-3 rounded-md hover:bg-yellow-700 transition"
                 >
                     Return Home
                 </button>
                 <button
-                    onClick={handlePlayAgain}
+                    onClick={ handlePlayAgain }
                     className="bg-yellow-600 text-white px-6 py-3 rounded-md hover:bg-yellow-700 transition"
                 >
                     Play another game

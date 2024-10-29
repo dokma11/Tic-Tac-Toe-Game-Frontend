@@ -31,62 +31,65 @@ function SinglePlayerBoard() {
     };
 
     useEffect(() => {
-        if (ws) {
-            const setupWebSocket = () => {
-                ws.onmessage = async (event) => {
-                    console.log('Message from server:', event.data);
+        if (!ws) {
+            toast.error('Web socket error!');
+            return;
+        }
 
-                    if (event.data.includes('finish') && event.data.includes(publicId)) {
-                        console.log('The game is finished');
+        const setupWebSocket = () => {
+            ws.onmessage = async (event) => {
+                console.log('Message from server:', event.data);
 
-                        setGameOver(true);
-                        setPlayersTurn(false);
+                if (event.data.includes('finish') && event.data.includes(publicId)) {
+                    console.log('The game is finished');
 
-                        handleFieldInput(event.data.toString());
-                        setTimeout(() => {
-                            const messageSplit = event.data.split(';');
+                    setGameOver(true);
+                    setPlayersTurn(false);
 
-                            if (messageSplit.length === 7 && messageSplit[6] === 'true') {
-                                console.log('The game is a draw.');
-                                toast.info('Draw!');
-                                setTimeout(() => {
-                                    return navigate('/draw/' + publicId);
-                                }, 5000);
-                            } else if (messageSplit.length === 7 && event.data.includes('x') && messageSplit[6] === 'false') {
-                                console.log('X player won.');
-                                toast.info('Congratulations! You have won the match!');
-                                setTimeout(() => {
-                                    return navigate('/win/' + publicId);
-                                }, 5000);
-                            } else {
-                                console.log('O player won.');
-                                toast.info('Defeat.');
-                                setTimeout(() => {
-                                    return navigate('/defeat/' + publicId);
-                                }, 5000);
-                            }
-                        }, 3000);
-                    }
+                    handleFieldInput(event.data.toString());
+                    setTimeout(() => {
+                        const messageSplit = event.data.split(';');
 
-                    if (event.data.includes('move') && event.data.includes(publicId)) {
-                        console.log('A move has been made');
-                        handleFieldInput(event.data.toString());
-                    }
-                };
+                        if (messageSplit.length === 7 && messageSplit[6] === 'true') {
+                            console.log('The game is a draw.');
+                            toast.info('Draw!');
+                            setTimeout(() => {
+                                return navigate('/draw/' + publicId);
+                            }, 5000);
+                        } else if (messageSplit.length === 7 && event.data.includes('x') && messageSplit[6] === 'false') {
+                            console.log('X player won.');
+                            toast.info('Congratulations! You have won the match!');
+                            setTimeout(() => {
+                                return navigate('/win/' + publicId);
+                            }, 5000);
+                        } else {
+                            console.log('O player won.');
+                            toast.info('Defeat.');
+                            setTimeout(() => {
+                                return navigate('/defeat/' + publicId);
+                            }, 5000);
+                        }
+                    }, 3000);
+                }
 
-                ws.onopen = () => {
-                    ws.send(JSON.stringify('Hello Server from the lobby!'));
+                if (event.data.includes('move') && event.data.includes(publicId)) {
+                    console.log('A move has been made');
+                    handleFieldInput(event.data.toString());
                 }
             };
 
-            if (ws.readyState === WebSocket.OPEN) {
-                setupWebSocket();
-            } else {
-                ws.onopen = () => {
-                    console.log('WebSocket connection is open now.');
-                    setupWebSocket();
-                };
+            ws.onopen = () => {
+                ws.send(JSON.stringify('Hello Server from the lobby!'));
             }
+        };
+
+        if (ws.readyState === WebSocket.OPEN) {
+            setupWebSocket();
+        } else {
+            ws.onopen = () => {
+                console.log('WebSocket connection is open now.');
+                setupWebSocket();
+            };
         }
     }, [ws, publicId]);
 
@@ -133,19 +136,20 @@ function SinglePlayerBoard() {
             });
             setPlayersTurn(true);
         }, 2000);
+        
         return;
     }
 
     return (
         <>
-            <p className={`text-xl font-semibold mb-6 mr-12 ${isPlayersTurn ? 'text-green-500' : 'text-red-500'}`}>
-                {isPlayersTurn ? 'Your turn' : "Computer's turn"}
+            <p className={`text-xl font-semibold mb-6 mr-12 ${ isPlayersTurn ? 'text-green-500' : 'text-red-500' }`}>
+                { isPlayersTurn ? 'Your turn' : "Computer's turn" }
             </p>
-        <div className="grid grid-cols-3 gap-10 w-1/3">
-                {squares.map((value, index) => (
+            <div className="grid grid-cols-3 gap-10 w-1/3">
+                { squares.map((value, index) => (
                     <Field key={index} value={value} onClick={() => handleClick(index)}/>
                 ))}
-        </div>
+            </div>
         </>
     );
 }
