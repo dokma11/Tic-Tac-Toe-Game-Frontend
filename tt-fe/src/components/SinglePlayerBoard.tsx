@@ -62,17 +62,25 @@ function SinglePlayerBoard() {
                         handleFieldInput(event.data.toString());
 
                         setTimeout(() => {
-                            if (event.data.includes('x')) {
+                            const messageSplit = event.data.split(';');
+
+                            if (messageSplit.length === 7 && messageSplit[6] === 'true') {
+                                console.log('The game is a draw.');
+                                toast.info('Draw!');
+                                setTimeout(() => {
+                                    return navigate('/draw/' + publicId);
+                                }, 5000);
+                            } else if (messageSplit.length === 7 && event.data.includes('x') && messageSplit[6] === 'false') {
                                 console.log('X player won.');
                                 toast.info('Congratulations! You have won the match!');
                                 setTimeout(() => {
-                                    navigate('/win/' + publicId);
+                                    return navigate('/win/' + publicId);
                                 }, 5000);
                             } else {
                                 console.log('O player won.');
                                 toast.info('Defeat.');
                                 setTimeout(() => {
-                                    navigate('/defeat/' + publicId);
+                                    return navigate('/defeat/' + publicId);
                                 }, 5000);
                             }
                         }, 3000);

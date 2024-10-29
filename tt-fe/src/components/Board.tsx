@@ -44,6 +44,7 @@ function Board() {
             console.log('player je iks')
             player = 'X';
             console.log('player sa printom: ' + player);
+            return;
         }
 
         console.log('player je oks');
@@ -63,6 +64,12 @@ function Board() {
                         await getGameInfo();
 
                         console.log('player: ' + player);
+
+                        if (event.data.includes('true')) {
+                            console.log('The game is a draw.');
+                            toast.success('Draw!');
+                            return navigate('/draw/' + publicId);
+                        }
 
                         if (event.data.includes('x')) {
                             if (player === 'X') {
