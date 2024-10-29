@@ -9,9 +9,10 @@ function ProfilePage() {
         firstName: '',
         lastName: '',
         email: '',
-        scoreX: 0,
-        scoreO: 0,
-        totalGames: 0
+        wins: 0,
+        losses: 0,
+        draws: 0,
+        totalPlayed: 0
     });
 
     useEffect(() => {
@@ -47,32 +48,37 @@ function ProfilePage() {
             <div className="bg-white shadow-md rounded-lg p-6">
                 <div className="mb-4">
                     <label className="block text-gray-700 font-semibold">Name:</label>
-                    <p>{user.firstName} {user.lastName}</p>
+                    <p>{ user.firstName } { user.lastName }</p>
                 </div>
 
                 <div className="mb-4">
                     <label className="block text-gray-700 font-semibold">Email:</label>
-                    <p>{user.email}</p>
+                    <p>{ user.email }</p>
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold">Wins as X player:</label>
-                    <p>{user.scoreX}</p>
+                    <label className="block text-gray-700 font-semibold">Wins:</label>
+                    <p>{ user.wins }</p>
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold">Wins as O player:</label>
-                    <p>{user.scoreO}</p>
+                    <label className="block text-gray-700 font-semibold">Losses:</label>
+                    <p>{ user.losses }</p>
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold">Draws:</label>
+                    <p>{ user.draws }</p>
                 </div>
 
                 <div className="mb-4">
                     <label className="block text-gray-700 font-semibold">Total Games Played:</label>
-                    <p>{user.totalGames}</p>
+                    <p>{ user.totalPlayed }</p>
                 </div>
 
                 <div className="mb-4">
                     <label className="block text-gray-700 font-semibold">Overall Win Rate:</label>
-                    <p>{((user.scoreX + user.scoreO) / user.totalGames * 100).toFixed(2)}%</p>
+                    <p>{((user.wins) / user.totalPlayed * 100).toFixed(2)}%</p>
                 </div>
             </div>
         </div>
