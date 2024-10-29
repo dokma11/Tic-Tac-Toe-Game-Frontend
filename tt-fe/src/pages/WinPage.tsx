@@ -18,13 +18,13 @@ function DefeatPage() {
             <div >
                 <button
                     onClick={handleReturnHome}
-                    className="bg-green-600 text-white mr-3 px-6 py-3 rounded-md hover:bg-red-700 transition"
+                    className="bg-green-600 text-white mr-3 px-6 py-3 rounded-md hover:bg-green-700 transition"
                 >
                     Return Home
                 </button>
                 <button
                     onClick={handlePlayAgain}
-                    className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition"
+                    className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition"
                 >
                     Play another game
                 </button>

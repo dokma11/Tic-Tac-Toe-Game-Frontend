@@ -42,12 +42,16 @@ function PlayPage() {
         const result = await res.json();
         toast.success('Game created successfully!');
 
+        // multiplayer
         if (typeToSend.type === 2) {
             return navigate('/lobby/' + result.publicId);
-            //return window.location.reload();
         }
 
-        // kako hendlovati deo kada je sp
+        // single player
+        if (typeToSend.type === 1) {
+            // ovde nema potrebe da pravim lobi ako igra sp, mozda samo da kada posalje neki potez, ja sam u servisu napravim potez i vratim oba nazad?
+            return navigate('/sp-board/' + result.publicId);
+        }
     }
 
     const submitJoinGameForm = async (e) => {

@@ -1,6 +1,5 @@
 import Board from "../components/Board.tsx";
 
-// ovo je dakle stranica koja ce imati neke info ali najvaznije je da sadrzi samu tablu, unutar table vec ce biti polja
 function BoardPage() {
     return (<>
         <div className='justify-items-center mt-12'>
