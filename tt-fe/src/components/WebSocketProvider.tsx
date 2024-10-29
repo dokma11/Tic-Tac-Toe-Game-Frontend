@@ -28,7 +28,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
                 const userSocketId = Math.floor(100000000 + Math.random() * 900000000);
                 console.log('User socket id: ' + userSocketId.toString());
-
                 socket.send(userSocketId.toString());
             };
 

@@ -10,6 +10,8 @@ import LobbyPage from "./pages/LobbyPage.tsx";
 import BoardPage from "./pages/BoardPage.tsx";
 import RulesPage from "./pages/RulesPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
+import DefeatPage from "./pages/DefeatPage.tsx";
+import WinPage from "./pages/WinPage.tsx";
 
 function App() {
     const router = createBrowserRouter(
@@ -23,6 +25,8 @@ function App() {
                 <Route path='/board/:publicId' element={<BoardPage />} />
                 <Route path='/rules' element={<RulesPage />} />
                 <Route path='/profile' element={<ProfilePage />} />
+                <Route path='/defeat/:publicId' element={<DefeatPage />} />
+                <Route path='/win/:publicId' element={<WinPage />} />
                 <Route path='*' element={<NotFoundPage />} />
             </Route>
         )
