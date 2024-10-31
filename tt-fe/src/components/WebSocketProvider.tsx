@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { toast } from "react-toastify";
 
 interface WebSocketContextType {
     ws: WebSocket | null;
@@ -18,13 +17,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const socket = new WebSocket('ws://localhost:3000');
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-            return () => {
-                toast.error('Authentication Error');
-            };
-        }
 
         socket.onopen = () => {
             console.log('Connected to WebSocket server');

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Field from "../components/Field.tsx";
+import { useLocation } from "react-router-dom";
 
 function GameHistoryPage() {
     const [publicId, setPublicId] = useState("");
@@ -16,13 +17,23 @@ function GameHistoryPage() {
         draws: 0,
         totalPlayed: 0
     });
+    const location = useLocation();
+    const { showMoves, gamePublicId } = location.state || {};
 
-    const submitFindHistoryForm = async (e) => {
-        e.preventDefault();
+    useEffect(() => {
+        if (showMoves && gamePublicId) {
+            setShouldShowMoves(true);
+            setPublicId(gamePublicId.toString());
+            submitFindHistoryForm(gamePublicId.toString());
+        }
+    }, [showMoves, gamePublicId]);
 
-        if (publicId === "" || publicId.length != 9) return toast.error('Invalid Public Id provided');
+    const submitFindHistoryForm = async (publicIdParam) => {
+        const idToUse = publicIdParam || publicId;
 
-        const res = await fetch('http://localhost:3000/api/games/history/' + publicId, {
+        if (idToUse == "" || idToUse.length != 9) return toast.error('Invalid Public Id provided');
+
+        const res = await fetch('http://localhost:3000/api/games/history/' + idToUse, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,12 +66,9 @@ function GameHistoryPage() {
                 'Authorization': `Bearer ${token}`,
             }
         });
-
         if (userResult.status !== 200) return toast.error('Unsuccessful winner retrieval: ' + userResult.statusText);
-
         setWinner(await userResult.json());
 
-        toast.success('Game history successfully retrieved!');
         return setShouldShowMoves(true);
     }
 
@@ -89,7 +97,7 @@ function GameHistoryPage() {
         { shouldShowMoves ? (
             <div className='container m-auto max-w-2xl py-10 pb-9 '>
                 <div>
-                    <p>Winner: { winner.firstName } { winner.lastName } </p>
+                    <p className="text-green-600 text-center text-2xl">Winner: { winner.firstName } { winner.lastName } </p>
                 </div>
                 <div className='justify-items-center mt-12'>
                     <div className="grid grid-cols-3 gap-10 w-1/2">

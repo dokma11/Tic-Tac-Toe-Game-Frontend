@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {NavLink, useNavigate} from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));

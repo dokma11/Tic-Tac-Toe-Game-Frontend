@@ -13,6 +13,7 @@ function Board() {
     let player = '';
     const [lastMove, setLastMove] = useState('Y');
     const [isPlayersTurn, setPlayersTurn] = useState(false);
+    const [isGameOver, setGameOver] = useState(false);
 
     const getGameInfo = async () => {
         const token = localStorage.getItem("token");
@@ -34,7 +35,7 @@ function Board() {
         const game = await res.json();
 
         const decoded = { id: jwtDecode(token) };
-        if (decoded.id === game.xPlayerId) {
+        if (decoded.id.id === game.xPlayerId) {
             player = 'X';
             return setPlayersTurn(true); // X player has the first move
         }
@@ -61,22 +62,30 @@ function Board() {
                     console.log('The game is finished');
 
                     await getGameInfo();
+                    setGameOver(true);
 
                     if (event.data.includes('true')) {
                         console.log('The game is a draw.');
                         toast.success('Draw!');
-                        return navigate('/draw/' + publicId);
+                        handleFieldInput(event.data.toString());
+                        return setTimeout(() => {
+                            navigate('/draw/' + publicId);
+                        }, 5000);
                     }
 
                     if (event.data.includes('x')) {
                         if (player === 'X') {
                             console.log('X player won.');
                             toast.success('Congratulations! You have won the match!');
-                            navigate('/win/' + publicId);
+                            setTimeout(() => {
+                                navigate('/win/' + publicId);
+                            }, 5000);
                         } else {
                             console.log('X player won.');
                             toast.error('Defeat.');
-                            navigate('/defeat/' + publicId);
+                            setTimeout(() => {
+                                navigate('/defeat/' + publicId);
+                            }, 5000);
                         }
                     }
 
@@ -84,11 +93,15 @@ function Board() {
                         if (player === 'Y') {
                             console.log('O player won.');
                             toast.success('Congratulations! You have won the match!');
-                            navigate('/win/' + publicId);
+                            setTimeout(() => {
+                                navigate('/win/' + publicId);
+                            }, 5000);
                         } else {
                             console.log('O player won.');
                             toast.error('Defeat.');
-                            navigate('/defeat/' + publicId);
+                            setTimeout(() => {
+                                navigate('/defeat/' + publicId);
+                            }, 5000);
                         }
                     }
 
@@ -117,6 +130,8 @@ function Board() {
         await getGameInfo();
 
         if (player === lastMove) return toast.info('Please wait for your turn');
+
+        if (isGameOver) return toast.info('The game is over!');
 
         const token = localStorage.getItem('token');
         if(ws && token) {
