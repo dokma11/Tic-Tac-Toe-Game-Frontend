@@ -19,6 +19,7 @@ function GameHistoryPage() {
     });
     const location = useLocation();
     const { showMoves, gamePublicId } = location.state || {};
+    const [xGreen, setXGreen] = useState(true);
 
     useEffect(() => {
         if (showMoves && gamePublicId) {
@@ -49,8 +50,10 @@ function GameHistoryPage() {
                 const newSquares = [...prevSquares];
                 if (move.userId === game!.xPlayerId) {
                     newSquares[index] = 'X';
+                    if (game!.winnerId === game!.yPlayerId) setXGreen(false);
                 } else {
                     newSquares[index] = 'Y';
+                    if (game!.winnerId === game!.yPlayerId) setXGreen(false);
                 }
                 return newSquares;
             });
@@ -102,7 +105,7 @@ function GameHistoryPage() {
                 <div className='justify-items-center mt-12'>
                     <div className="grid grid-cols-3 gap-10 w-1/2">
                         { squares.map((value, index) => (
-                            <Field key={index} value={value} onClick={() => handleClick(index)}/>
+                            <Field key={ index } value={ value } xGreen={ xGreen } onClick={() => handleClick(index)}/>
                         ))}
                     </div>
                 </div>
@@ -128,7 +131,7 @@ function GameHistoryPage() {
                             className='border rounded w-1/2 py-2 px-3 mb-2 ml-40'
                             placeholder='eg. 123456789'
                             required
-                            value={publicId}
+                            value={ publicId }
                             onChange={(e) => setPublicId(e.target.value)}
                         />
                     </div>

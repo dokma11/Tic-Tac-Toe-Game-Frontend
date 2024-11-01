@@ -54,9 +54,6 @@ function GameCard({ publicId, createdAt, startedAt, finishedAt, xPlayer, yPlayer
     }
 
     const seeTheFullGameButtonClicked = () => {
-
-        console.log('public id: '+ publicId);
-
         return navigate('/game-history', {
             state: {
                 showMoves: true,

@@ -70,57 +70,57 @@ function ProfilePage() {
                 <div className="bg-white shadow-md rounded-lg p-6">
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold">Name:</label>
-                        <p>{user.firstName} {user.lastName}</p>
+                        <p>{ user.firstName } { user.lastName }</p>
                     </div>
 
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold">Email:</label>
-                        <p>{user.email}</p>
+                        <p>{ user.email }</p>
                     </div>
 
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold">Wins:</label>
-                        <p>{user.wins}</p>
+                        <p>{ user.wins }</p>
                     </div>
 
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold">Draws:</label>
-                        <p>{user.draws}</p>
+                        <p>{ user.draws }</p>
                     </div>
 
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold">Losses:</label>
-                        <p>{user.losses}</p>
+                        <p>{ user.losses }</p>
                     </div>
 
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold">Total Games Played:</label>
-                        <p>{user.totalPlayed}</p>
+                        <p>{ user.totalPlayed }</p>
                     </div>
 
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold">Overall Win Rate:</label>
-                        <p>{((user.wins) / user.totalPlayed * 100).toFixed(2)}%</p>
+                        <p>{ ((user.wins) / user.totalPlayed * 100).toFixed(2) }%</p>
                     </div>
                 </div>
             </div>
             <div className="flex flex-col items-center">
                 <h2 className="text-center text-2xl font-bold mb-4">Game history</h2>
                 <div className="grid grid-cols-1 gap-10 w-1/3">
-                    {games.length > 0 ? (
+                    { games.length > 0 ? (
                         games
                             .slice()
                             .reverse()
                             .map((game) => (
                                 <GameCard
-                                    key={game.publicId}
-                                    publicId={game.publicId}
-                                    createdAt={game.createdAt}
-                                    startedAt={game.startedAt}
-                                    finishedAt={game.completedAt}
-                                    xPlayer={game.xPlayer}
-                                    yPlayer={game.yPlayer}
-                                    winnerId={game.winnerId}
+                                    key={ game.publicId }
+                                    publicId={ game.publicId }
+                                    createdAt={ game.createdAt }
+                                    startedAt={ game.startedAt }
+                                    finishedAt={ game.completedAt }
+                                    xPlayer={ game.xPlayer }
+                                    yPlayer={ game.yPlayer }
+                                    winnerId={ game.winnerId }
                                 />
                             ))
                     ) : (
