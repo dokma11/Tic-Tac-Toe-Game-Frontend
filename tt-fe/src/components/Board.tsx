@@ -53,60 +53,7 @@ function Board() {
             await getGameInfo();
             ws.onmessage = async (event) => {
                 console.log('Message from server:', event.data);
-
-                // handle basic move
-                if (event.data.includes('move') && event.data.includes(publicId)) handleFieldInput(event.data.toString());
-
-                // handle game finish
-                if (event.data.includes('finish') && event.data.includes(publicId)) {
-                    console.log('The game is finished');
-
-                    await getGameInfo();
-                    setGameOver(true);
-
-                    if (event.data.includes('true')) {
-                        console.log('The game is a draw.');
-                        toast.success('Draw!');
-                        handleFieldInput(event.data.toString());
-                        return setTimeout(() => {
-                            navigate('/draw/' + publicId);
-                        }, 5000);
-                    }
-
-                    if (event.data.includes('x')) {
-                        if (player === 'X') {
-                            console.log('X player won.');
-                            toast.success('Congratulations! You have won the match!');
-                            setTimeout(() => {
-                                navigate('/win/' + publicId);
-                            }, 5000);
-                        } else {
-                            console.log('X player won.');
-                            toast.error('Defeat.');
-                            setTimeout(() => {
-                                navigate('/defeat/' + publicId);
-                            }, 5000);
-                        }
-                    }
-
-                    if (event.data.includes('y')) {
-                        if (player === 'Y') {
-                            console.log('O player won.');
-                            toast.success('Congratulations! You have won the match!');
-                            setTimeout(() => {
-                                navigate('/win/' + publicId);
-                            }, 5000);
-                        } else {
-                            console.log('O player won.');
-                            toast.error('Defeat.');
-                            setTimeout(() => {
-                                navigate('/defeat/' + publicId);
-                            }, 5000);
-                        }
-                    }
-
-                    handleFieldInput(event.data.toString());
-                }
+                await handleMessage(event.data.toString(), publicId);
             };
 
             ws.onopen = () => {
@@ -123,6 +70,23 @@ function Board() {
             };
         }
     }, [ws, publicId]);
+
+    const handleMessage = async (eventData: string, publicId) => {
+        // handle basic move
+        if (eventData.includes('move') && eventData.includes(publicId)) handleFieldInput(eventData.toString());
+
+        // handle game finish
+        if (eventData.includes('finish') && eventData.includes(publicId)) {
+            console.log('The game is finished');
+
+            await getGameInfo();
+            setGameOver(true);
+
+            handleGameFinish(eventData.toString());
+
+            handleFieldInput(eventData.toString());
+        }
+    }
 
     const handleClick = async (index: number) => {
         if (squares[index]) return;
@@ -144,38 +108,68 @@ function Board() {
     };
 
     const handleFieldInput = (data: string)=>  {
-        if (data.includes('x')) {
-            const messageSplit = data.split(';');
-            const index = messageSplit[3];
+        const messageSplit = data.split(';');
+        const index = messageSplit[3];
 
-            setSquares(prevSquares => {
-                const newSquares = [...prevSquares];
-                newSquares[index] = 'X';
-                setLastMove('X');
-                if (player === 'X') {
-                    setPlayersTurn(false);
-                } else {
-                    setPlayersTurn(true);
-                }
-                return newSquares;
-            });
+        if (data.includes('x')) handleXInput(index);
+        if (data.includes('y')) handleYInput(index);
+    }
+
+    const handleXInput = (index) => {
+        setSquares(prevSquares => {
+            const newSquares = [...prevSquares];
+            newSquares[index] = 'X';
+            setLastMove('X');
+            if (player === 'X') {
+                setPlayersTurn(false);
+            } else {
+                setPlayersTurn(true);
+            }
+            return newSquares;
+        });
+    }
+
+    const handleYInput = (index) => {
+        setSquares(prevSquares => {
+            const newSquares = [...prevSquares];
+            newSquares[index] = 'O';
+            setLastMove('Y');
+            if (player !== 'X') {
+                setPlayersTurn(false);
+            } else {
+                setPlayersTurn(true);
+            }
+            return newSquares;
+        });
+    }
+
+    const handleGameFinish = (eventData: string) => {
+        if (eventData.includes('true')) {
+            console.log('The game is a draw.');
+            toast.success('Draw!');
+            handleFieldInput(eventData.toString());
+            return setTimeout(() => {
+                navigate('/draw/' + publicId);
+            }, 5000);
         }
 
-        if (data.includes('y')) {
-            const messageSplit = data.split(';');
-            const index = messageSplit[3];
+        if (eventData.includes('x')) handleWin('X'); // X player is the winner
+        if (eventData.includes('y')) handleWin('Y'); // Y player is the winner
+    }
 
-            setSquares(prevSquares => {
-                const newSquares = [...prevSquares];
-                newSquares[index] = 'O';
-                setLastMove('Y');
-                if (player !== 'X') {
-                    setPlayersTurn(false);
-                } else {
-                    setPlayersTurn(true);
-                }
-                return newSquares;
-            });
+    const handleWin = (winner: string) => {
+        if (player === winner) {
+            console.log(winner + ' player won.');
+            toast.success('Congratulations! You have won the match!');
+            setTimeout(() => {
+                navigate('/win/' + publicId);
+            }, 5000);
+        } else {
+            console.log(winner + ' player won.');
+            toast.error('Defeat.');
+            setTimeout(() => {
+                navigate('/defeat/' + publicId);
+            }, 5000);
         }
     }
 

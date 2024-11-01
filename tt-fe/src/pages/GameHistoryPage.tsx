@@ -47,15 +47,7 @@ function GameHistoryPage() {
         game.moves.forEach((move) => {
            const index = convertArrayToIndex(move.xCoordinate, move.yCoordinate);
             setSquares(prevSquares => {
-                const newSquares = [...prevSquares];
-                if (move.userId === game!.xPlayerId) {
-                    newSquares[index] = 'X';
-                    if (game!.winnerId === game!.yPlayerId) setXGreen(false);
-                } else {
-                    newSquares[index] = 'Y';
-                    if (game!.winnerId === game!.yPlayerId) setXGreen(false);
-                }
-                return newSquares;
+                return handleFieldInput(prevSquares, move, index);
             });
         });
 
@@ -77,6 +69,19 @@ function GameHistoryPage() {
 
     const goBack = () => {
         setShouldShowMoves(false);
+    }
+
+    const handleFieldInput = (prevSquares, move, index) => {
+        const newSquares = [...prevSquares];
+
+        if (move.userId === game!.xPlayerId) {
+            newSquares[index] = 'X';
+            if (game!.winnerId === game!.yPlayerId) setXGreen(false);
+        } else {
+            newSquares[index] = 'Y';
+            if (game!.winnerId === game!.yPlayerId) setXGreen(false);
+        }
+        return newSquares;
     }
 
     const handleClick = (index) => {
@@ -105,7 +110,7 @@ function GameHistoryPage() {
                 <div className='justify-items-center mt-12'>
                     <div className="grid grid-cols-3 gap-10 w-1/2">
                         { squares.map((value, index) => (
-                            <Field key={ index } value={ value } xGreen={ xGreen } onClick={() => handleClick(index)}/>
+                            <Field key={ index } value={ value } xGreen={ xGreen } isHistorySelected={ true } onClick={() => handleClick(index)}/>
                         ))}
                     </div>
                 </div>

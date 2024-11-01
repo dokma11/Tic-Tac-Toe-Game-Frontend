@@ -39,43 +39,7 @@ function SinglePlayerBoard() {
         const setupWebSocket = () => {
             ws.onmessage = async (event) => {
                 console.log('Message from server:', event.data);
-
-                if (event.data.includes('finish') && event.data.includes(publicId)) {
-                    console.log('The game is finished');
-
-                    setGameOver(true);
-                    setPlayersTurn(false);
-
-                    handleFieldInput(event.data.toString());
-                    setTimeout(() => {
-                        const messageSplit = event.data.split(';');
-
-                        if (messageSplit.length === 7 && messageSplit[6] === 'true') {
-                            console.log('The game is a draw.');
-                            toast.info('Draw!');
-                            setTimeout(() => {
-                                return navigate('/draw/' + publicId);
-                            }, 5000);
-                        } else if (messageSplit.length === 7 && event.data.includes('x') && messageSplit[6] === 'false') {
-                            console.log('X player won.');
-                            toast.info('Congratulations! You have won the match!');
-                            setTimeout(() => {
-                                return navigate('/win/' + publicId);
-                            }, 5000);
-                        } else {
-                            console.log('O player won.');
-                            toast.info('Defeat.');
-                            setTimeout(() => {
-                                return navigate('/defeat/' + publicId);
-                            }, 5000);
-                        }
-                    }, 3000);
-                }
-
-                if (event.data.includes('move') && event.data.includes(publicId)) {
-                    console.log('A move has been made');
-                    handleFieldInput(event.data.toString());
-                }
+                handleMessage(event.data.toString(), publicId);
             };
 
             ws.onopen = () => {
@@ -92,6 +56,26 @@ function SinglePlayerBoard() {
             };
         }
     }, [ws, publicId]);
+
+    const handleMessage = (eventData: string, publicId) => {
+        if (eventData.includes('finish') && eventData.includes(publicId)) {
+            console.log('The game is finished');
+
+            setGameOver(true);
+            setPlayersTurn(false);
+
+            handleFieldInput(eventData);
+            setTimeout(() => {
+                const messageSplit = eventData.split(';');
+                handleGameFinish(messageSplit, eventData);
+            }, 3000);
+        }
+
+        if (eventData.includes('move') && eventData.includes(publicId)) {
+            console.log('A move has been made');
+            handleFieldInput(eventData);
+        }
+    }
 
     const handleClick = async (index: number) => {
         if (squares[index]) return;
@@ -138,6 +122,28 @@ function SinglePlayerBoard() {
         }, 2000);
         
         return;
+    }
+
+    const handleGameFinish = (messageSplit, eventData) => {
+        if (messageSplit.length === 7 && messageSplit[6] === 'true') {
+            console.log('The game is a draw.');
+            toast.info('Draw!');
+            setTimeout(() => {
+                return navigate('/draw/' + publicId);
+            }, 5000);
+        } else if (messageSplit.length === 7 && eventData.includes('x') && messageSplit[6] === 'false') {
+            console.log('X player won.');
+            toast.info('Congratulations! You have won the match!');
+            setTimeout(() => {
+                return navigate('/win/' + publicId);
+            }, 5000);
+        } else {
+            console.log('O player won.');
+            toast.info('Defeat.');
+            setTimeout(() => {
+                return navigate('/defeat/' + publicId);
+            }, 5000);
+        }
     }
 
     return (
