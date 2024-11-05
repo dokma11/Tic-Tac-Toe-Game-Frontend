@@ -93,7 +93,10 @@ function Board() {
 
         await getGameInfo();
 
-        if (player === lastMove) return toast.info('Please wait for your turn');
+        if (player === lastMove) {
+            setPlayersTurn(false);
+            return toast.info('Please wait for your turn');
+        }
 
         if (isGameOver) return toast.info('The game is over!');
 

@@ -89,9 +89,9 @@ function LobbyPage() {
         <section className='text-center flex flex-col justify-center items-center h-96'>
             <h1 className='text-6xl font-bold mb-4'>Lobby</h1>
             <p className='text-xl mb-5 mt-6'>Waiting for other player to join your game... <br></br> You can invite your friends by sending them the public id!</p>
-            <div className='flex items-center space-x-4 mt-6 w-1/4'>
-                <p className='text-xl mb-5'>Game public id: </p>
-                <p className='text-xl mb-5 rounded w-1/3 h-fit bg-gray-200'>{publicId}</p>
+            <div className='flex ml-auto mr-auto items-center space-x-4 mt-6 w-1/2'>
+                <p className='text-xl mb-5 ml-16'>Game public id: </p>
+                <p className='text-xl mb-5 rounded w-1/2 h-fit bg-gray-200'>{ publicId }</p>
                 <button
                     onClick={ copyToClipboard }
                     className='text-white bg-indigo-600 hover:bg-green-800 rounded-md px-3 py-2 -mt-6'

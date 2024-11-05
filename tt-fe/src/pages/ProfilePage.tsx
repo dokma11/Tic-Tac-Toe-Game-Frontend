@@ -109,8 +109,6 @@ function ProfilePage() {
                 <div className="grid grid-cols-1 gap-10 w-1/3">
                     { games.length > 0 ? (
                         games
-                            .slice()
-                            .reverse()
                             .map((game) => (
                                 <GameCard
                                     key={ game.publicId }

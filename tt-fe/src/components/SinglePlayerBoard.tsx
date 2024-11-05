@@ -36,10 +36,10 @@ function SinglePlayerBoard() {
             return;
         }
 
-        const setupWebSocket = () => {
+        const setupWebSocket = async () => {
             ws.onmessage = async (event) => {
                 console.log('Message from server:', event.data);
-                handleMessage(event.data.toString(), publicId);
+                await handleMessage(event.data.toString(), publicId);
             };
 
             ws.onopen = () => {
@@ -57,12 +57,15 @@ function SinglePlayerBoard() {
         }
     }, [ws, publicId]);
 
-    const handleMessage = (eventData: string, publicId) => {
+    const handleMessage = async (eventData: string, publicId) => {
+
+        console.log('Hendluje poruku asd kao');
+
         if (eventData.includes('finish') && eventData.includes(publicId)) {
             console.log('The game is finished');
 
-            setGameOver(true);
-            setPlayersTurn(false);
+            await setGameOver(true);
+            await setPlayersTurn(false);
 
             handleFieldInput(eventData);
             setTimeout(() => {

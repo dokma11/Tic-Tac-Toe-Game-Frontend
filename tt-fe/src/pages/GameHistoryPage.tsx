@@ -30,9 +30,15 @@ function GameHistoryPage() {
     }, [showMoves, gamePublicId]);
 
     const submitFindHistoryForm = async (publicIdParam) => {
-        const idToUse = publicIdParam || publicId;
+        let idToUse;
 
-        if (idToUse == "" || idToUse.length != 9) return toast.error('Invalid Public Id provided');
+        if (publicId != "") {
+            idToUse = publicId.toString();
+        } else {
+            idToUse = publicIdParam.toString();
+        }
+
+        if (idToUse == "") return toast.error('Invalid Public Id provided');
 
         const res = await fetch('http://localhost:3000/api/games/history/' + idToUse, {
             method: 'GET',
@@ -54,15 +60,18 @@ function GameHistoryPage() {
         const token = localStorage.getItem("token");
         if (!token) return toast.error('There is no token');
 
-        const userResult = await fetch('http://localhost:3000/api/users/id/' + game!.winnerId, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-        if (userResult.status !== 200) return toast.error('Unsuccessful winner retrieval: ' + userResult.statusText);
-        setWinner(await userResult.json());
+        // if this is false, that means that the game ended as a draw
+        if (game.winnerId) {
+            const userResult = await fetch('http://localhost:3000/api/users/id/' + game!.winnerId, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            if (userResult.status !== 200) return toast.error('Unsuccessful winner retrieval: ' + userResult.statusText);
+            setWinner(await userResult.json());
+        }
 
         return setShouldShowMoves(true);
     }
@@ -105,10 +114,14 @@ function GameHistoryPage() {
         { shouldShowMoves ? (
             <div className='container m-auto max-w-2xl py-10 pb-9 '>
                 <div>
-                    <p className="text-green-600 text-center text-2xl">Winner: { winner.firstName } { winner.lastName } </p>
+                    { winner.firstName != '' && winner.lastName != '' ? <>
+                        <p className="text-green-600 text-center text-2xl">Winner: {winner.firstName} {winner.lastName} </p>
+                    </> : <>
+                        <p className="text-yellow-600 text-center text-2xl">The game ended as a draw</p>
+                    </>}
                 </div>
-                <div className='justify-items-center mt-12'>
-                    <div className="grid grid-cols-3 gap-10 w-1/2">
+                <div className='flex flex-col items-center justify-items-center mt-12'>
+                <div className="grid grid-cols-3 gap-10 w-1/2">
                         { squares.map((value, index) => (
                             <Field key={ index } value={ value } xGreen={ xGreen } isHistorySelected={ true } onClick={() => handleClick(index)}/>
                         ))}
@@ -130,7 +143,7 @@ function GameHistoryPage() {
                         Enter the game id
                         </label>
                         <input
-                            type='number'
+                            type='text'
                             id='publicId'
                             name='publicId'
                             className='border rounded w-1/2 py-2 px-3 mb-2 ml-40'

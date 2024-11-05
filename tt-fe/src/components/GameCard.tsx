@@ -110,7 +110,7 @@ function GameCard({ publicId, createdAt, startedAt, finishedAt, xPlayer, yPlayer
                             <p className="text-red-600">{ loser.firstName + ' ' + loser.lastName || 'There is no loser since the game is a draw' }</p>
                         </div>
                     </> : <>
-                        <p>The game ended in a draw</p>
+                        <p className="text-yellow-600">The game ended in a draw</p>
                     </>}
                 </div>
             </div>
