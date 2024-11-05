@@ -1,25 +1,25 @@
 import Field from './Field';
 import { useEffect, useState } from 'react';
 import { useWebSocket } from "./WebSocketProvider.tsx";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 function Board() {
     const { ws } = useWebSocket();
     const { publicId } = useParams();
     const [squares, setSquares] = useState(Array(9).fill(null));
-    const navigate = useNavigate();
-    let player = '';
+    const navigate: NavigateFunction = useNavigate();
+    let player: string = '';
     const [lastMove, setLastMove] = useState('Y');
     const [isPlayersTurn, setPlayersTurn] = useState(false);
     const [isGameOver, setGameOver] = useState(false);
 
-    const getGameInfo = async () => {
-        const token = localStorage.getItem("token");
+    const getGameInfo = async (): Promise<void | Id> => {
+        const token: string | null = localStorage.getItem("token");
         if (!token) return toast.error('Authorization Error!');
 
-        const res = await fetch('http://localhost:3000/api/games/public-id/' + publicId, {
+        const res: Response = await fetch('http://localhost:3000/api/games/public-id/' + publicId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,20 +43,20 @@ function Board() {
         return player = 'Y';
     };
 
-    useEffect(() => {
+    useEffect((): void => {
         if (!ws) {
             toast.error('Web socket error!');
             return;
         }
 
-        const setupWebSocket = async () => {
+        const setupWebSocket = async (): Promise<void> => {
             await getGameInfo();
-            ws.onmessage = async (event) => {
+            ws.onmessage = async (event): Promise<void> => {
                 console.log('Message from server:', event.data);
                 await handleMessage(event.data.toString(), publicId);
             };
 
-            ws.onopen = () => {
+            ws.onopen = (): void => {
                 ws.send(JSON.stringify('Hello Server from the lobby!'));
             }
         };
@@ -64,14 +64,14 @@ function Board() {
         if (ws.readyState === WebSocket.OPEN) {
             setupWebSocket();
         } else {
-            ws.onopen = () => {
+            ws.onopen = (): void => {
                 console.log('WebSocket connection is open now.');
                 setupWebSocket();
             };
         }
     }, [ws, publicId]);
 
-    const handleMessage = async (eventData: string, publicId) => {
+    const handleMessage = async (eventData: string, publicId: string): Promise<void> => {
         // handle basic move
         if (eventData.includes('move') && eventData.includes(publicId)) handleFieldInput(eventData.toString());
 

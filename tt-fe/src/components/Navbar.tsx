@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavigateFunction, NavLink, useNavigate } from 'react-router-dom';
 
 function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
 
     useEffect(() => {
         setIsLoggedIn(!!localStorage.getItem('token'));
@@ -15,11 +15,11 @@ function Navbar() {
         };
     }, []);
 
-    const handleStorageChange = () => {
+    const handleStorageChange = (): void => {
         setIsLoggedIn(!!localStorage.getItem('token'));
     };
 
-    const handleLogout = () => {
+    const handleLogout = (): void => {
         localStorage.removeItem('token');
         navigate('/');
         return window.location.reload();

@@ -1,29 +1,29 @@
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 function PlayPage() {
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const [showCreateGameForm, setShowCreateGameForm] = useState(false);
     const [showJoinGameForm, setShowJoinGameForm] = useState(false);
     const [publicId, setPublicId] = useState("");
     const [gameType, setGameType] = useState("Single player");
 
-    const handleGoBackOption = () => {
+    const handleGoBackOption = (): void => {
         navigate('/');
     }
 
-    const submitCreateForm = async (e) => {
+    const submitCreateForm = async (e): Promise<void | Id> => {
         e.preventDefault();
 
         const typeToSend = {
             type: gameType === 'Single player' ? 1 : 2
         };
 
-        const token = localStorage.getItem("token");
+        const token: string | null = localStorage.getItem("token");
         if (!token) return toast.error('Authentication Error!');
 
-        const res = await fetch('http://localhost:3000/api/games', {
+        const res: Response = await fetch('http://localhost:3000/api/games', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,15 +45,15 @@ function PlayPage() {
         if (typeToSend.type === 1) return navigate('/sp-board/' + result.publicId);
     }
 
-    const submitJoinGameForm = async (e) => {
+    const submitJoinGameForm = async (e): Promise <void | Id> => {
         e.preventDefault();
 
         console.log('publicId: ', publicId);
 
         if (publicId === "") return toast.error('Invalid Public Id provided');
 
-        const token = localStorage.getItem("token");
-        const res = await fetch('http://localhost:3000/api/games/join/' + publicId, {
+        const token: string | null = localStorage.getItem("token");
+        const res: Response = await fetch('http://localhost:3000/api/games/join/' + publicId, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,8 +76,8 @@ function PlayPage() {
                             className={ showCreateGameForm ? "flex w-1/2 text-center justify-center rounded-md bg-gray-400 ml-auto mr-auto px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" :
                                 "flex w-1/2 text-center justify-center rounded-md bg-indigo-600 ml-auto mr-auto px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" }
                             onClick={ showCreateGameForm ?
-                                () => setShowCreateGameForm(false) :
-                                () => setShowCreateGameForm(true)}>
+                                (): void => setShowCreateGameForm(false) :
+                                (): void => setShowCreateGameForm(true)}>
                         { showCreateGameForm ? 'Back' : 'Create a new game'}
                     </button>
 
@@ -93,7 +93,7 @@ function PlayPage() {
                                             <select id="gameType"
                                                     name="gameType"
                                                     value={ gameType }
-                                                    onChange={(e) => setGameType(e.target.value)}
+                                                    onChange={(e): void => setGameType(e.target.value)}
                                                     autoComplete="gameType-name"
                                                     className="block w-full pl-2.5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
                                                 <option>Single player</option>
@@ -117,8 +117,8 @@ function PlayPage() {
                             className={ showJoinGameForm ? "flex w-1/2 text-center justify-center rounded-md bg-gray-400 ml-auto mr-auto mt-6 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" :
                                 "flex w-1/2 text-center justify-center rounded-md bg-indigo-600 ml-auto mr-auto mt-6 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"}
                             onClick={ showJoinGameForm ?
-                                () => setShowJoinGameForm(false) :
-                                () => setShowJoinGameForm(true)}>
+                                (): void => setShowJoinGameForm(false) :
+                                (): void => setShowJoinGameForm(true)}>
                         { showJoinGameForm ? 'Back' : 'Join an already existing game'}
                     </button>
 
@@ -139,7 +139,7 @@ function PlayPage() {
                                                 placeholder='eg. 123456789'
                                                 required
                                                 value={ publicId }
-                                                onChange={(e) => setPublicId(e.target.value)}
+                                                onChange={(e): void => setPublicId(e.target.value)}
                                             />
                                         </div>
                                     </div>

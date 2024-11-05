@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 
 function HomePage() {
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
     useEffect(() => {
@@ -10,32 +10,32 @@ function HomePage() {
 
         window.addEventListener('storage', handleStorageChange);
 
-        return () => {
+        return (): void => {
             window.removeEventListener('storage', handleStorageChange);
         };
     }, []);
 
-    const handleStorageChange = () => {
+    const handleStorageChange = (): void => {
         setIsLoggedIn(!!localStorage.getItem('token'));
     };
 
-    const startGame = () => {
+    const startGame = (): void => {
         return navigate('/play');
     };
 
-    const checkProfile = () => {
+    const checkProfile = (): void => {
         return navigate('/profile');
     };
 
-    const checkRules = () => {
+    const checkRules = (): void => {
         return navigate('/rules');
     };
 
-    const logIn = () => {
+    const logIn = (): void => {
         return navigate('/login');
     };
 
-    const signUp = () => {
+    const signUp = (): void => {
         return navigate('/register');
     };
 

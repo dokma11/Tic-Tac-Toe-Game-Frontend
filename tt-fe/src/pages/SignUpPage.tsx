@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { useNavigate } from 'react-router-dom';
+import { Id, toast } from "react-toastify";
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -9,9 +9,9 @@ function SignUpPage() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
 
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
 
-    const submitForm = async (e) => {
+    const submitForm = async (e): Promise<void | Id> => {
         e.preventDefault();
 
         const credentials = {
@@ -23,7 +23,7 @@ function SignUpPage() {
 
         if (credentials.password !== repeatedPassword) return toast.error('Passwords do not match! Please enter matching passwords.');
 
-        const res = await fetch('http://localhost:3000/api/auth/register', {
+        const res: Response = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ function SignUpPage() {
 
         if (res.status !== 200) return toast.error('Unsuccessful sign up attempt: ' + res.statusText);
 
-        const token = await res.text();
+        const token: string = await res.text();
         localStorage.setItem('token', token);
 
         toast.success('Signed up successfully!');
@@ -57,7 +57,7 @@ function SignUpPage() {
                             placeholder='eg. John'
                             required
                             value={ firstName }
-                            onChange={(e) => setFirstName(e.target.value)}
+                            onChange={(e): void => setFirstName(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -72,7 +72,7 @@ function SignUpPage() {
                             placeholder='eg. Doe'
                             required
                             value={ lastName }
-                            onChange={(e) => setLastName(e.target.value)}
+                            onChange={(e): void => setLastName(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -87,7 +87,7 @@ function SignUpPage() {
                             placeholder='eg. example-mail@gmail.com'
                             required
                             value={ email }
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e): void => setEmail(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -101,7 +101,7 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
                             value={ password }
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e): void => setPassword(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -115,7 +115,7 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
                             value={ repeatedPassword }
-                            onChange={(e) => setRepeatedPassword(e.target.value)}
+                            onChange={(e): void => setRepeatedPassword(e.target.value)}
                         />
                     </div>
                     <button type="submit"

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
 
-    const submitForm = async (e) => {
+    const submitForm = async (e): Promise<void | Id> => {
         e.preventDefault();
 
         const credentials = {
@@ -15,7 +15,7 @@ function LoginPage() {
             password: password,
         };
 
-        const res = await fetch('http://localhost:3000/api/auth/login', {
+        const res: Response = await fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ function LoginPage() {
 
         if (res.status !== 200) return toast.error('Unsuccessful log in attempt: ' + res.statusText);
 
-        const token = await res.text();
+        const token: string = await res.text();
         localStorage.setItem('token', token);
 
         toast.success('Logged in successfully!');
@@ -50,7 +50,7 @@ function LoginPage() {
                             placeholder='eg. example-mail@gmail.com'
                             required
                             value={ email }
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e): void => setEmail(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -64,7 +64,7 @@ function LoginPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
                             value={ password }
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e): void => setPassword(e.target.value)}
                         />
                     </div>
                     <button type="submit"

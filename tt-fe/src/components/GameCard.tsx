@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Id, toast } from "react-toastify";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 interface GameCardProps {
     publicId?: string;
@@ -19,17 +19,17 @@ function GameCard({ publicId, createdAt, startedAt, finishedAt, xPlayer, yPlayer
     const [creationTime, setCreationTime] = useState();
     const [startTime, setStartTime] = useState();
     const [finishTime, setFinishTime] = useState();
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
 
-    useEffect(() => {
+    useEffect((): void => {
         getUsers();
         setCreationTime(formatTimeAndDates(createdAt?.toString()));
         setStartTime(formatTimeAndDates(startedAt?.toString()));
         setFinishTime(formatTimeAndDates(finishedAt?.toString()));
     }, []);
 
-    const getUsers = () => {
-        const token = localStorage.getItem("token");
+    const getUsers = (): Id | undefined => {
+        const token: string | null = localStorage.getItem("token");
         if (!token) return toast.error('Authentication error');
 
         //if none od these are equal, the game is a draw (winner and loser are predefined to this)
@@ -45,15 +45,15 @@ function GameCard({ publicId, createdAt, startedAt, finishedAt, xPlayer, yPlayer
     const formatTimeAndDates = (dateString: string): string => {
         const date = new Date(dateString);
         date.setHours(date.getHours());
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const day: string = date.getDate().toString().padStart(2, '0');
+        const month: string = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year: number = date.getFullYear();
+        const hours: string = date.getHours().toString().padStart(2, '0');
+        const minutes: string = date.getMinutes().toString().padStart(2, '0');
         return `${day}.${month}.${year} ${hours}:${minutes}`;
     }
 
-    const seeTheFullGameButtonClicked = () => {
+    const seeTheFullGameButtonClicked = (): void => {
         return navigate('/game-history', {
             state: {
                 showMoves: true,

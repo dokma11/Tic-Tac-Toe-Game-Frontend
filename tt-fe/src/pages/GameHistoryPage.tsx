@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import {Id, toast} from "react-toastify";
 import Field from "../components/Field.tsx";
 import { useLocation } from "react-router-dom";
 
@@ -29,7 +29,7 @@ function GameHistoryPage() {
         }
     }, [showMoves, gamePublicId]);
 
-    const submitFindHistoryForm = async (publicIdParam) => {
+    const submitFindHistoryForm = async (publicIdParam): Promise<void | Id> => {
         let idToUse;
 
         if (publicId != "") {
@@ -38,9 +38,10 @@ function GameHistoryPage() {
             idToUse = publicIdParam.toString();
         }
 
+
         if (idToUse == "") return toast.error('Invalid Public Id provided');
 
-        const res = await fetch('http://localhost:3000/api/games/history/' + idToUse, {
+        const res: Response = await fetch('http://localhost:3000/api/games/history/' + idToUse, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,19 +51,19 @@ function GameHistoryPage() {
         if(res.status !== 200) return toast.error('Unsuccessful history retrieval: ' + res.statusText);
 
         game = await res.json();
-        game.moves.forEach((move) => {
+        game.moves.forEach((move): void => {
            const index = convertArrayToIndex(move.xCoordinate, move.yCoordinate);
             setSquares(prevSquares => {
                 return handleFieldInput(prevSquares, move, index);
             });
         });
 
-        const token = localStorage.getItem("token");
+        const token: string | null = localStorage.getItem("token");
         if (!token) return toast.error('There is no token');
 
         // if this is false, that means that the game ended as a draw
         if (game.winnerId) {
-            const userResult = await fetch('http://localhost:3000/api/users/id/' + game!.winnerId, {
+            const userResult: Response = await fetch('http://localhost:3000/api/users/id/' + game!.winnerId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ function GameHistoryPage() {
         return setShouldShowMoves(true);
     }
 
-    const goBack = () => {
+    const goBack = (): void => {
         setShouldShowMoves(false);
     }
 
@@ -93,7 +94,7 @@ function GameHistoryPage() {
         return newSquares;
     }
 
-    const handleClick = (index) => {
+    const handleClick = (index): void => {
         // nista
     }
 
@@ -122,8 +123,8 @@ function GameHistoryPage() {
                 </div>
                 <div className='flex flex-col items-center justify-items-center mt-12'>
                 <div className="grid grid-cols-3 gap-10 w-1/2">
-                        { squares.map((value, index) => (
-                            <Field key={ index } value={ value } xGreen={ xGreen } isHistorySelected={ true } onClick={() => handleClick(index)}/>
+                        { squares.map((value: string, index: number) => (
+                            <Field key={ index } value={ value } xGreen={ xGreen } isHistorySelected={ true } onClick={(): void => handleClick(index)}/>
                         ))}
                     </div>
                 </div>
@@ -150,14 +151,14 @@ function GameHistoryPage() {
                             placeholder='eg. 123456789'
                             required
                             value={ publicId }
-                            onChange={(e) => setPublicId(e.target.value)}
+                            onChange={(e): void => setPublicId(e.target.value)}
                         />
                     </div>
                 </div>
                 <button type="button"
                         className="flex w-1/3 justify-center rounded-md bg-black ml-56 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         onClick={ submitFindHistoryForm }>
-                    Join
+                    Find
                 </button>
             </div> ) }
     </>);

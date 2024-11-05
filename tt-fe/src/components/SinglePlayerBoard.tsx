@@ -1,20 +1,20 @@
 import Field from './Field';
 import { useEffect, useState } from 'react';
 import { useWebSocket } from "./WebSocketProvider.tsx";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+import {Id, toast} from "react-toastify";
 
 function SinglePlayerBoard() {
     const { ws } = useWebSocket();
     const { publicId } = useParams();
     const [squares, setSquares] = useState(Array(9).fill(null));
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const [isPlayersTurn, setPlayersTurn] = useState(true);
     const [isGameOver, setGameOver] = useState(false);
 
-    const getGameInfo = async () => {
-        const token = localStorage.getItem("token");
-        const res = await fetch('http://localhost:3000/api/games/public-id/' + publicId, {
+    const getGameInfo = async (): Promise<void> => {
+        const token: string | null = localStorage.getItem("token");
+        const res: Response = await fetch('http://localhost:3000/api/games/public-id/' + publicId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,19 +30,19 @@ function SinglePlayerBoard() {
         return;
     };
 
-    useEffect(() => {
+    useEffect((): void => {
         if (!ws) {
             toast.error('Web socket error!');
             return;
         }
 
-        const setupWebSocket = async () => {
-            ws.onmessage = async (event) => {
+        const setupWebSocket = async (): Promise<void> => {
+            ws.onmessage = async (event): Promise<void> => {
                 console.log('Message from server:', event.data);
                 await handleMessage(event.data.toString(), publicId);
             };
 
-            ws.onopen = () => {
+            ws.onopen = (): void => {
                 ws.send(JSON.stringify('Hello Server from the lobby!'));
             }
         };
@@ -50,16 +50,14 @@ function SinglePlayerBoard() {
         if (ws.readyState === WebSocket.OPEN) {
             setupWebSocket();
         } else {
-            ws.onopen = () => {
+            ws.onopen = (): void => {
                 console.log('WebSocket connection is open now.');
                 setupWebSocket();
             };
         }
     }, [ws, publicId]);
 
-    const handleMessage = async (eventData: string, publicId) => {
-
-        console.log('Hendluje poruku asd kao');
+    const handleMessage = async (eventData: string, publicId: string): Promise<void> => {
 
         if (eventData.includes('finish') && eventData.includes(publicId)) {
             console.log('The game is finished');
@@ -80,7 +78,7 @@ function SinglePlayerBoard() {
         }
     }
 
-    const handleClick = async (index: number) => {
+    const handleClick = async (index: number): Promise<Id | undefined> => {
         if (squares[index]) return;
 
         if (isGameOver) return toast.info('The game is over!');
@@ -99,10 +97,10 @@ function SinglePlayerBoard() {
         return;
     };
 
-    const handleFieldInput = (data: string)=>  {
-        const messageSplit = data.split(';');
-        const index = messageSplit[3];
-        const computerIndex = messageSplit[5];
+    const handleFieldInput = (data: string): void=>  {
+        const messageSplit: string[] = data.split(';');
+        const index: string = messageSplit[3];
+        const computerIndex: string = messageSplit[5];
 
         setSquares(prevSquares => {
             const newSquares = [...prevSquares];
@@ -115,7 +113,7 @@ function SinglePlayerBoard() {
         if (messageSplit.length === 7 && data.includes('x') && messageSplit[6] === 'false') return;
 
         // wait for computer's move
-        setTimeout(() => {
+        setTimeout((): void => {
             setSquares(prevSquares => {
                 const newSquares = [...prevSquares];
                 newSquares[computerIndex] = 'O';
@@ -131,19 +129,19 @@ function SinglePlayerBoard() {
         if (messageSplit.length === 7 && messageSplit[6] === 'true') {
             console.log('The game is a draw.');
             toast.info('Draw!');
-            setTimeout(() => {
+            setTimeout((): void => {
                 return navigate('/draw/' + publicId);
             }, 5000);
         } else if (messageSplit.length === 7 && eventData.includes('x') && messageSplit[6] === 'false') {
             console.log('X player won.');
             toast.info('Congratulations! You have won the match!');
-            setTimeout(() => {
+            setTimeout((): void => {
                 return navigate('/win/' + publicId);
             }, 5000);
         } else {
             console.log('O player won.');
             toast.info('Defeat.');
-            setTimeout(() => {
+            setTimeout((): void => {
                 return navigate('/defeat/' + publicId);
             }, 5000);
         }
@@ -155,7 +153,7 @@ function SinglePlayerBoard() {
                 { isPlayersTurn ? 'Your turn' : "Computer's turn" }
             </p>
             <div className="grid grid-cols-3 gap-10 w-1/3">
-                { squares.map((value, index) => (
+                { squares.map((value, index: number) => (
                     <Field key={index} value={value} onClick={() => handleClick(index)}/>
                 ))}
             </div>

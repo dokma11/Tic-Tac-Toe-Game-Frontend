@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Id, toast } from "react-toastify";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import GameCard from "../components/GameCard.tsx";
 
 function ProfilePage() {
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const [user, setUser] = useState({
         firstName: '',
         lastName: '',
@@ -16,16 +16,16 @@ function ProfilePage() {
     });
     const [games, setGames] = useState([]);
 
-    useEffect(() => {
+    useEffect((): void => {
         getProfile();
         getGameHistory();
     }, []);
+    const getProfile = async (): Promise<void | Id> => {
 
-    const getProfile = async () => {
-        const token = localStorage.getItem("token");
+        const token: string | null = localStorage.getItem("token");
         if (!token) return toast.error('Authentication error');
 
-        const res = await fetch('http://localhost:3000/api/users/profile', {
+        const res: Response = await fetch('http://localhost:3000/api/users/profile', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -41,11 +41,11 @@ function ProfilePage() {
         setUser(await res.json());
     };
 
-    const getGameHistory = async () => {
-        const token = localStorage.getItem("token");
+    const getGameHistory = async (): Promise<void | Id> => {
+        const token: string | null = localStorage.getItem("token");
         if (!token) return toast.error('Authentication error');
 
-        const res = await fetch('http://localhost:3000/api/games/finished', {
+        const res: Response = await fetch('http://localhost:3000/api/games/finished', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

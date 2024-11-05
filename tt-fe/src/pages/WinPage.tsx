@@ -1,13 +1,13 @@
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 function WinPage() {
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
 
-    const handleReturnHome = () => {
+    const handleReturnHome = (): void => {
         navigate('/');
     };
 
-    const handlePlayAgain = () => {
+    const handlePlayAgain = (): void => {
         navigate('/play');
     };
 

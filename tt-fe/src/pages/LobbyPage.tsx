@@ -1,15 +1,15 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+import { Id, toast } from "react-toastify";
 import { useEffect } from "react";
 import { useWebSocket } from '../components/WebSocketProvider';
 
 function LobbyPage() {
     const { publicId } = useParams();
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const { ws } = useWebSocket();
 
-    const gameExists = async () => {
-        const res = await fetch('http://localhost:3000/api/games/public-id/' + publicId, {
+    const gameExists = async (): Promise<void> => {
+        const res: Response = await fetch('http://localhost:3000/api/games/public-id/' + publicId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,23 +24,23 @@ function LobbyPage() {
     };
     gameExists();
 
-    const copyToClipboard = () => {
+    const copyToClipboard = (): void => {
         if (publicId) {
             navigator.clipboard.writeText(publicId)
-                .then(() => {
+                .then((): void => {
                     toast.success("Public id successfully copied!");
                 })
-                .catch(() => {
+                .catch((): void => {
                     toast.error("Failed to copy the public id.");
                 });
         }
     };
 
-    const abandonGame = async () => {
-        const token = localStorage.getItem("token");
+    const abandonGame = async ():  Promise<void | Id> => {
+        const token: string | null = localStorage.getItem("token");
         if (!token) return toast.error('Authentication error');
 
-        const res = await fetch('http://localhost:3000/api/games/cancel/' + publicId, {
+        const res: Response = await fetch('http://localhost:3000/api/games/cancel/' + publicId, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -60,8 +60,8 @@ function LobbyPage() {
             return;
         }
 
-        const setupWebSocket = () => {
-            ws.onmessage = (event) => {
+        const setupWebSocket = (): void => {
+            ws.onmessage = (event): void => {
                 console.log('Message from server:', event.data);
 
                 if (event.data.includes('join') && event.data.includes(publicId)) {
@@ -70,7 +70,7 @@ function LobbyPage() {
                 }
             };
 
-            ws.onopen = () => {
+            ws.onopen = (): void => {
                 ws.send(JSON.stringify('Hello Server from the lobby!'));
             }
         };
@@ -78,7 +78,7 @@ function LobbyPage() {
         if (ws.readyState === WebSocket.OPEN) {
             setupWebSocket();
         } else {
-            ws.onopen = () => {
+            ws.onopen = (): void => {
                 console.log('WebSocket connection is open now.');
                 setupWebSocket();
             };
