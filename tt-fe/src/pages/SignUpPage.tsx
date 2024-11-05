@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { useNavigate } from 'react-router-dom';
+import { Id, toast } from "react-toastify";
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
-// mozda da u poljima sa loznikom treba da se stavi recimo ikonica oka kao za zatvaranje i otvaranje
 function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -10,9 +9,9 @@ function SignUpPage() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
 
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
 
-    const submitForm = async (e) => {
+    const submitForm = async (e): Promise<void | Id> => {
         e.preventDefault();
 
         const credentials = {
@@ -24,7 +23,7 @@ function SignUpPage() {
 
         if (credentials.password !== repeatedPassword) return toast.error('Passwords do not match! Please enter matching passwords.');
 
-        const res = await fetch('http://localhost:3000/api/auth/register', {
+        const res: Response = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +33,7 @@ function SignUpPage() {
 
         if (res.status !== 200) return toast.error('Unsuccessful sign up attempt: ' + res.statusText);
 
-        const token = await res.text();
+        const token: string = await res.text();
         localStorage.setItem('token', token);
 
         toast.success('Signed up successfully!');
@@ -44,7 +43,7 @@ function SignUpPage() {
     return (
         <>
             <div className='container m-auto max-w-2xl py-24 '>
-                <form onSubmit={submitForm}>
+                <form onSubmit={ submitForm }>
                     <h2 className='text-3xl text-center font-semibold mb-6'>Sign up</h2>
                     <div className='mb-4'>
                         <label className='block text-gray-700 font-bold mb-2'>
@@ -57,8 +56,8 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             placeholder='eg. John'
                             required
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
+                            value={ firstName }
+                            onChange={(e): void => setFirstName(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -72,8 +71,8 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             placeholder='eg. Doe'
                             required
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
+                            value={ lastName }
+                            onChange={(e): void => setLastName(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -87,8 +86,8 @@ function SignUpPage() {
                             className='border rounded w-full py-2 px-3 mb-2'
                             placeholder='eg. example-mail@gmail.com'
                             required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={ email }
+                            onChange={(e): void => setEmail(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -101,8 +100,8 @@ function SignUpPage() {
                             name='password'
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={ password }
+                            onChange={(e): void => setPassword(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -115,8 +114,8 @@ function SignUpPage() {
                             name='repeatedPassword'
                             className='border rounded w-full py-2 px-3 mb-2'
                             required
-                            value={repeatedPassword}
-                            onChange={(e) => setRepeatedPassword(e.target.value)}
+                            value={ repeatedPassword }
+                            onChange={(e): void => setRepeatedPassword(e.target.value)}
                         />
                     </div>
                     <button type="submit"
