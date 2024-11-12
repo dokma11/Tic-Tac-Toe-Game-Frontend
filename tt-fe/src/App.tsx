@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { WebSocketProvider } from "./components/WebSocketProvider.tsx";
+import MainLayout from "./layouts/MainLayout.tsx";
+import HomePage from "./pages/HomePage.tsx";
+import LoginPage from "./pages/LoginPage.tsx";
+import SignUpPage from "./pages/SignUpPage.tsx";
+import PlayPage from "./pages/PlayPage.tsx";
+import NotFoundPage from "./pages/NotFoundPage.tsx";
+import LobbyPage from "./pages/LobbyPage.tsx";
+import BoardPage from "./pages/BoardPage.tsx";
+import RulesPage from "./pages/RulesPage.tsx";
+import ProfilePage from "./pages/ProfilePage.tsx";
+import DefeatPage from "./pages/DefeatPage.tsx";
+import WinPage from "./pages/WinPage.tsx";
+import SinglePlayerBoardPage from "./pages/SinglePlayerBoardPage.tsx";
+import DrawPage from "./pages/DrawPage.tsx";
+import GameHistoryPage from "./pages/GameHistoryPage.tsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const router = createBrowserRouter(
+        createRoutesFromElements(
+            <Route path='/' element={<MainLayout />}>
+                <Route path='/' element={<HomePage />} />
+                <Route path='/login' element={<LoginPage />} />
+                <Route path='/register' element={<SignUpPage />} />
+                <Route path='/play' element={<PlayPage />} />
+                <Route path='/lobby/:publicId' element={<LobbyPage />} />
+                <Route path='/board/:publicId' element={<BoardPage />} />
+                <Route path='/sp-board/:publicId' element={<SinglePlayerBoardPage />} />
+                <Route path='/rules' element={<RulesPage />} />
+                <Route path='/profile' element={<ProfilePage />} />
+                <Route path='/defeat/:publicId' element={<DefeatPage />} />
+                <Route path='/win/:publicId' element={<WinPage />} />
+                <Route path='/draw/:publicId' element={<DrawPage />} />
+                <Route path='/game-history' element={<GameHistoryPage />} />
+                <Route path='*' element={<NotFoundPage />} />
+            </Route>
+        )
+    );
+    return (
+        <WebSocketProvider>
+            <RouterProvider router={router} />
+        </WebSocketProvider>
+    );}
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
-
-export default App
+export default App;
